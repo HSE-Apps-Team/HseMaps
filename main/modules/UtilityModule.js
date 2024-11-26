@@ -6,6 +6,7 @@ import { PathTransitionHandler } from './PathTransitionHandler.js';
 import { RenderingModule } from './RenderingModule.js';
 import { DataModule } from './DataModule.js';
 import { PathfindingModule } from './PathfindingModule.js';
+import { StreetViewModule } from './StreetViewModule.js';
 
 /**
  * UtilityModule - Core functionality for agent movement and path tracking
@@ -51,13 +52,14 @@ export const UtilityModule = {
             agent: DOMCache[Config.SVG.SELECTORS.AGENT],
             path: DOMCache[`${Config.SVG.SELECTORS.GRAPH} > polyline`],
             progbar: DOMCache[Config.SVG.SELECTORS.PROGBAR],
-            svg: DOMCache[Config.SVG.SELECTORS.SVGRAPH]
+            svg: DOMCache[Config.SVG.SELECTORS.SVGRAPH],
+            image: DOMCache[Config.SVG.SELECTORS.IMAGE]
         };
 
         if (!Object.values(elements).every(el => el?.isConnected)) return;
 
         try {
-            const { agent, path, progbar, svg } = elements;
+            const { agent, path, progbar, svg, image } = elements;
             const sliderValue = progbar.value;
             const sliderCompletion = sliderValue / progbar.max;
             
@@ -78,6 +80,7 @@ export const UtilityModule = {
             agent.style.fill = ColorModule.getColor(sliderCompletion);
             
             PathTransitionHandler.handleTransition(path, sliderValue, StateManager.get('totalDistance'));
+            //image.href.baseVal = StreetViewModule.getImg();
         } catch (error) {
             console.error('Agent update failed:', error);
         }
