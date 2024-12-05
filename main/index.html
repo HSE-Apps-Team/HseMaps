@@ -5,12 +5,22 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="stylesheet" href="style.css">
+        <link rel="shortcut icon" href="elements/hseapps.0051872e.png" type="image/x-icon">
         <title>HSE Maps</title>
     </head>
-    <body>
+    <body data-theme="default">
+      <select name="Color Theme" id="theme-dropdown">
+        <option value="light">Default</option>
+        <option value="dark">Dark</option>
+        <option value="secondary">Secondary</option>
+        <option value="spring">Spring</option>
+        <option value="summer">Summer</option>
+        <option value="fall">Fall</option>
+        <option value="winter">Winter</option>
+      </select>
       <h1>
         <div id="title">
-          <div style="font-family: 'Arial', Courier, monospace;display: flex;flex-wrap: wrap;align-items: center;justify-content: center;"> 
+          <div style="display: flex;flex-wrap: wrap;align-items: center;justify-content: center;"> 
             <img style="width: 100px;height: auto;" src="elements/hseapps.0051872e.png" alt="HseAPPS Logo" width="40" height="40">
             <span>HSE Maps</span>
           </div>
@@ -44,7 +54,7 @@
         <svg id="svg" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" viewBox="0 0 0 0">
           <g>
           <g id="svgraph">
-            <g xmlns="http://www.w3.org/2000/svg"><image xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="2048" height="1307" preserveAspectRatio="none" xlink:href="elements/mainfloorcrunched.png"></image>
+            <g xmlns="http://www.w3.org/2000/svg"><image id="map" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="2048" height="1308" preserveAspectRatio="none" xlink:href="elements/mainfloorcrunched.png"></image>
         <g id="graph"></g></g>
       </g>
           </g>

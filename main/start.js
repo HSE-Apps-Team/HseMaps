@@ -1,4 +1,7 @@
+
 import { StartModule } from './modules/StartModule.js';
+
+
 
 (async () => {
         Object.assign(window, {

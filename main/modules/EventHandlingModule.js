@@ -94,3 +94,20 @@ document.getElementById("scroll").onscroll = () => EventHandlingModule.updateSli
 
 // Direct slider input binding
 document.getElementById("progbar").oninput = () => UtilityModule.updateAgent();
+
+/**
+ * Updates the body's data-theme attribute based on the selected theme
+ * 
+ * @example
+ * // When user selects "dark" from the theme dropdown:
+ * // themeDropdown.value = "dark"
+ * // -> sets document.body.dataset.theme = "dark"
+ */
+function updateTheme() {
+    const themeDropdown = document.getElementById("theme-dropdown");
+    const selectedTheme = themeDropdown.value;
+    document.body.dataset.theme = selectedTheme;
+}
+
+// Bind theme dropdown change event to updateTheme function
+document.getElementById("theme-dropdown").onchange = updateTheme;

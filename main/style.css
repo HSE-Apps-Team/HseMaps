@@ -1,10 +1,103 @@
+/* CSS FONTS */
+@import url('https://fonts.googleapis.com/css2?family=Kumbh+Sans:wght@100..900&display=swap');
+
+/* CSS THEMES */
+:root {
+  --primary-color: #007eef;
+  --secondary-color: #01539C;
+  --font-color: #424242;
+  --bg-color: #F7FAFC;
+  --heading-color: #292922;
+  --border-color: #808080;
+  --filter: none;
+} 
+
+[data-theme="dark"] {
+  --primary-color: #9A97F3;
+  --secondary-color: #818cab;
+  --font-color: #e1e1ff;
+  --bg-color: #161625;
+  --heading-color: #ffffff;
+  --border-color: #9a9a9a;
+  --filter: invert(1);
+}
+
+[data-theme="secondary"] {
+  --primary-color: #0B3D91;
+  --secondary-color: #083075;
+  --font-color: #0B3D91;
+  --bg-color: #F7F7F7;
+  --heading-color: #C8102E;
+  --border-color: #0B3D91;
+  --filter: none;
+}
+
+[data-theme="spring"] {
+  --primary-color: #66CDAA;
+  --secondary-color: #3CB371;
+  --font-color: #2E8B57;
+  --bg-color: #F5FFFA;
+  --heading-color: #2E8B57;
+  --border-color: #66CDAA;
+  --filter: none;
+}
+
+[data-theme="summer"] {
+  --primary-color: #FFD700;
+  --secondary-color: #FFA500;
+  --font-color: #FF4500;
+  --bg-color: #FFFACD;
+  --heading-color: #FF6347;
+  --border-color: #FFD700;
+  --filter: none;
+}
+
+[data-theme="fall"] {
+  --primary-color: #D2691E;
+  --secondary-color: #8B4513;
+  --font-color: #4B2E0F;
+  --bg-color: #FFF8DC;
+  --heading-color: #8B4513;
+  --border-color: #D2691E;
+  --filter: none;
+}
+
+[data-theme="winter"] {
+  --primary-color: #5A9BD4;
+  --secondary-color: #7FB3C8;
+  --font-color: #C0D6E4;
+  --bg-color: #F5FAFF;
+  --heading-color: #4A90E2;
+  --border-color: #5A9BD4;
+  --filter: none;
+}
+
+/* CSS DOCUMENTATION */
+body {
+  background-color: var(--bg-color);
+}
+
+#theme-dropdown {
+  position: absolute;
+  top: 0;
+  right: 0;
+  margin: 0.5em;
+  z-index: 100;
+}
+
+#map {
+  filter: var(--filter);
+}
+
 #title {
   text-align: center;
+  font-family: "Kumbh Sans", sans-serif;
   font-size: 2em;
+  color: var(--heading-color);
 }
 
 .line {
-  stroke: #808080;
+  stroke: var(--border-color);
   stroke-width: 4;
   fill: none;
   stroke-linecap: round;
@@ -12,7 +105,7 @@
 }
 
 .selected {
-  stroke: #007eef;
+  stroke: var(--primary-color);
   stroke-width: 8;
 }
 
@@ -23,18 +116,18 @@
 
 #startpt {
   fill: #FF0000;
-  stroke: #01539C;
+  stroke: var(--secondary-color);
   stroke-width: 0.2em;
 }
 
 #endpt {
   fill: #00FF00;
-  stroke: #01539C;
+  stroke: var(--secondary-color);
   stroke-width: 0.2em;
 }
 #agent {
   fill: rgb(255, 0, 0);
-  stroke: #01539C;
+  stroke: var(--secondary-color);
   stroke-width: 0.2em;
 }
 
@@ -48,7 +141,8 @@ svg {
   height: 96vmin;
   display: block;
   margin: auto;
-  border: #808080 solid 2px;
+  border: var(--border-color) solid 2px;
+  border-radius: 1em;
 }
 
 #inputdiv {
