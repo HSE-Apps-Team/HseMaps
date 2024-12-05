@@ -68,7 +68,7 @@ export const DataModule = (function() {
             const [distMatrix, nextMatrix, rooms, verts, imgs] = await Promise.all([
                 fetchJSON('elements/DistanceMatrix.json'),
                 fetchJSON('elements/PrecomputedPaths.json'),
-                fetchJSON('elements/SLAVEWORK.json').then(flipKeyValuePairWithMultiNodes),
+                fetchJSON('elements/Nodes.json').then(flipKeyValuePairWithMultiNodes),
                 fetchJSON('elements/Vertices.json'),
                 fetchJSON('elements/StreetView.json')
             ]);
