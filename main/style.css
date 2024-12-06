@@ -9,6 +9,10 @@
   --bg-color: #F7FAFC;
   --heading-color: #292922;
   --border-color: #808080;
+  --button-color1: #95cdfe;
+  --button-color2: #e3f2ff;
+  --button-color3: #70bcff;
+  --button-font-color: #000000;
   --filter: none;
 } 
 
@@ -19,6 +23,10 @@
   --bg-color: #161625;
   --heading-color: #ffffff;
   --border-color: #9a9a9a;
+  --button-color1: #b3b2f7;
+  --button-color2: #d1d0fa;
+  --button-color3: #a1a0f5;
+  --button-font-color: #000000;
   --filter: invert(1);
 }
 
@@ -29,6 +37,10 @@
   --bg-color: #F7F7F7;
   --heading-color: #C8102E;
   --border-color: #0B3D91;
+  --button-color1: #4A8CFF;
+  --button-color2: #6699FF;
+  --button-color3: #3366FF;
+  --button-font-color: #ffffff;
   --filter: none;
 }
 
@@ -39,6 +51,10 @@
   --bg-color: #F5FFFA;
   --heading-color: #2E8B57;
   --border-color: #66CDAA;
+  --button-color1: #98FB98;
+  --button-color2: #90EE90;
+  --button-color3: #8FBC8F;
+  --button-font-color: #000000;
   --filter: none;
 }
 
@@ -49,6 +65,10 @@
   --bg-color: #FFFACD;
   --heading-color: #FF6347;
   --border-color: #FFD700;
+  --button-color1: #FFEC8B;
+  --button-color2: #FFF68F;
+  --button-color3: #FFD700;
+  --button-font-color: #000000;
   --filter: none;
 }
 
@@ -59,16 +79,24 @@
   --bg-color: #FFF8DC;
   --heading-color: #8B4513;
   --border-color: #D2691E;
+  --button-color1: #ffa500;
+  --button-color2: #ff8c00;
+  --button-color3: #ff7f50;
+  --button-font-color: #000000;
   --filter: none;
 }
 
 [data-theme="winter"] {
   --primary-color: #5A9BD4;
   --secondary-color: #7FB3C8;
-  --font-color: #C0D6E4;
-  --bg-color: #F5FAFF;
+  --font-color: #3999ed;
+  --bg-color: #e3f1ff;
   --heading-color: #4A90E2;
   --border-color: #5A9BD4;
+  --button-color1: #b3d7f7;
+  --button-color2: #c7e2ff;
+  --button-color3: #a9c9ff;
+  --button-font-color: #000000;
   --filter: none;
 }
 
@@ -160,6 +188,7 @@ svg {
 html {
   overflow-x: hidden;
 }
+
 #scroll {
   overflow: auto;
   position: absolute;
@@ -167,14 +196,55 @@ html {
   width: 0px;
   padding: 48vmin;
 }
+
 #scroll::-webkit-scrollbar {
   width: 0px;
 }
+
 #stairwell {
   fill: #FFFF00;
   stroke: #740000;
   stroke-width: 0.2em;
 }
-#progbar{
+
+#progbar {
+  width: 45%;
+}
+
+#progbarcontainer{
   width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+#schedulecontainer {
+  display: flex;
+  justify-content: center;
+  margin: 1em;
+  gap: 1em;
+}
+
+.textbox {
+  border: solid var(--border-color) 2px;
+  border-radius: 1em;
+  background-color: var(--bg-color);
+  color: var(--font-color);
+}
+
+#btn {
+  border: solid var(--border-color) 0.15em;
+  border-radius: 0.5em;
+  background-color: var(--button-color1);
+  color: var(--button-font-color);
+  transition: background-color 0.1s;
+}
+
+#btn:hover {
+  background-color: var(--button-color2);
+  border: solid var(--border-color) 0.15em;
+}
+
+#btn:active {
+  background-color: var(--button-color3);
+  border: solid var(--border-color) 2px;
 }

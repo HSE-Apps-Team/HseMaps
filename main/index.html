@@ -13,15 +13,15 @@
         <option value="light">Default</option>
         <option value="dark">Dark</option>
         <option value="secondary">Secondary</option>
-        <option value="spring">Spring</option>
+        <!-- <option value="spring">Spring</option>
         <option value="summer">Summer</option>
-        <option value="fall">Fall</option>
+        <option value="fall">Fall</option> -->
         <option value="winter">Winter</option>
       </select>
       <h1>
         <div id="title">
           <div style="display: flex;flex-wrap: wrap;align-items: center;justify-content: center;"> 
-            <img style="width: 100px;height: auto;" src="elements/hseapps.0051872e.png" alt="HseAPPS Logo" width="40" height="40">
+            <img id="titleicon" style="width: 100px;height: auto;" src="elements/hseapps.0051872e.png" alt="HseAPPS Logo" width="40" height="40">
             <span>HSE Maps</span>
           </div>
         </div>
@@ -41,10 +41,10 @@
 
       <div id="inputdiv">
         <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 1em;">
-          <input type="text" id="start" placeholder="Start">
-          <input type="text" id="end" placeholder="Destination">
+          <input class="textbox" type="text" id="start" placeholder="Start">
+          <input class="textbox" type="text" id="end" placeholder="Destination">
         </div>
-        <button onclick="markShortestPathFromInput()">Route</button>
+        <button id="btn" onclick="markShortestPathFromInput()">Route</button>
       </div>
       
       
@@ -60,9 +60,13 @@
           </g>
       </svg>
       </div>
-      <input title="Progress" type="range" min="0" max="200" value="0" id="progbar">
-      <input title="Schedule" type="text" id="sched">
-      <input type="button" onclick="window.navSchedule()" value="Schedule">
+      <div id="progbarcontainer">
+        <input title="Progress" type="range" min="0" max="200" value="0" id="progbar">
+      </div>
+      <div id="schedulecontainer">
+        <input class="textbox" title="Schedule" type="text" id="sched">
+        <input id="btn" type="button" onclick="window.navSchedule()" value="Schedule">
+      </div>
 
     </body>
     <script type="module" src="./index.js"></script>
