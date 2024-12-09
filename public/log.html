@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+ <html lang="en">
+    <head> 
+      <script type="module" src="./start.js"></script>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="logstyle.css">
+        <title>HseMapsLogin</title>
+    </head>
+    <body>
+        <h1>
+            <div id="Title" style="text-align: center">
+              <div style="font-family: 'Arial', Courier, monospace;"> 
+                <img style="vertical-align:middle" src="elements/hseapps.0051872e.png" alt="HseAPPS Logo" width="40" height="40"/>
+                <span style="vertical-align:middle">HSE Maps</span>
+              </div>
+            </div>
+          </h1>
+        <h2>
+            Please login with your school email
+        </h2>
+        <h3>
+            Email
+        <input title="email" type="text" id="email">
+        </h3>
+          <script>
+          // setInterval(function() {
+          //   if(!(window.checkIP())) {
+          //     window.location.href = "start.html";
+          //     console.log("redirected");
+          //   } else {
+          //     console.log("not redirected");
+          //   }
+          // }, 5000);
+          </script>
+        <h3>
+            Password
+        <input title="password" type="password" id="password">
+        </h3>
+        <div class="container">
+          <button id="submit" onclick="checkLogin()">login</button>
+        </div>
+    </body>
+ </html>

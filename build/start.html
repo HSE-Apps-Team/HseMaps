@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+ <html lang="en">
+    <head> 
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="startstyle.css">
+        <title>HseMapsDenied</title>
+    </head>
+    <body>
+      <script type="module" src="msTools.js"></script>
+      <div id="root"></div>
+      <script type="module" src="./start.js"></script>
+
+      <h1>
+        <div id="Title" style="text-align: left">
+          <div style="font-family: 'Arial', Courier, monospace;"> 
+            <img style="vertical-align:middle" src="../src/elements/hseapps.0051872e.png" alt="HseAPPS Logo" width="40" height="40"/>
+            <span style="vertical-align:middle">HSE Maps</span>
+          </div>
+        </div>
+        <script>
+          function retry() {
+            if(window.checkIP()) {
+              window.location.href = "log.html";
+              console.log("redirected");
+            } else {
+              console.log("not redirected");
+            }
+          } 
+        </script>
+        <script>
+          // setInterval(function() {
+          //   if(window.checkIP()) {
+          //     window.location.href = "log.html";
+          //     console.log("redirected");
+          //   } else {
+          //     console.log("not redirected");
+          //   }
+          // }, 5000);
+        </script>
+      </h1>
+         <h2>ACCESS DENIED</h2>
+         <p>Please connect to the HSE Wifi to proceed</p>
+          <button id="retry" onclick="retry()">Retry</button>
+    </body>
+ </html>
