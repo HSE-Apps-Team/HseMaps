@@ -27,22 +27,21 @@ const Navbar= ({instance, loginRequest})=> {
                 console.log(e+"login error");
             });
         }
-console.log(auth)
   return (
     <div>
     <React.Fragment>
       <AppBar sx={{ background: "#FFFFFF" }}>
         <Toolbar>
-         <Typography variant="h5" component="div" sx={{color:"black"}}> HSE AD Boilerplate</Typography>
+         <Typography variant="h5" component="div" sx={{color:"black"}}>HSE Maps</Typography>
               <Tabs
                 sx={{ marginLeft: "auto",marginRight:"auto" ,color:"black"}}
                 indicatorColor="secondary"
                 textColor="inherit"
-                value={0}
+                value={1}
               >
-                <Tab label="Sample Tab 1" value={1}/>
-                <Tab label="Sample Tab 2" value={1}/>
-                <Tab label="Sample Tab 3"value={1} />
+                <Tab label="Navigation" value={1}/>
+                <Tab label="Schedule" value={2}/>
+                <Tab label="Setting"value={3} />
               </Tabs>
                 {auth.isAuth ? 
                 <>

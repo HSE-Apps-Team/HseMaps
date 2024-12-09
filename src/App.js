@@ -61,21 +61,16 @@ function App() {
         }
       };
 
-console.log(auth)
   return (
     
     <AuthContext.Provider value={{ auth, setAuth }}>
         <Navbar instance={instance} 
         loginRequest={loginRequest} />
       
-        <h1>HSE AD Boilerplate</h1>
       {auth.isAuth ? 
                 <div>
                  
-                  <h1>{auth.user.role}</h1>
-                  <h2>{"Name:" + auth.user.displayName}</h2>
-                  <h2>{"Grade: " + auth.user.grade}</h2>
-                  <h2>{"Email: " + auth.user.username}</h2>
+                  
                 </div>  :
 
                 <div>

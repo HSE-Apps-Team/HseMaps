@@ -52,7 +52,7 @@
     const end = performance.now();
     return end-start;
   }
-  function flipKeyValuePairWithMultiNodes(obj) {
+  export function flipKeyValuePairWithMultiNodes(obj) {
     let flipped = {};
     
     for (let node in obj) {

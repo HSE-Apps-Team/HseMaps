@@ -30,26 +30,6 @@ export const DataModule = (function() {
         imgs: []
     };
 
-    /**
-     * Fetches and parses JSON from given URL
-     * @param {string} url - URL to fetch JSON from
-     * @returns {Promise<any>} Parsed JSON data
-     * @throws {Error} If fetch fails or response is not OK
-     * 
-     * @example
-     * await fetchJSON('elements/DistanceMatrix.json')
-     * // Returns: [[0, 5, Infinity], [5, 0, 10], [Infinity, 10, 0]]
-     */
-    async function fetchJSON(url) {
-        try {
-            const response = await fetch(url);
-            if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-            return await response.json();
-        } catch (error) {
-            console.error(`Failed to fetch ${url}:`, error);
-            throw error;
-        }
-    }
 
     /**
      * Initializes the module by loading all required data files
@@ -66,13 +46,12 @@ export const DataModule = (function() {
      */
     async function initialize() {
         try {
-            const [distMatrix, nextMatrix, rooms, verts, imgs] = await Promise.all([
-                fetchJSON('../src/elements/DistanceMatrix.json'),
-                fetchJSON('../src/elements/PrecomputedPaths.json'),
-                fetchJSON('../src/elements/SLAVEWORK.json').then(flipKeyValuePairWithMultiNodes),
-                fetchJSON('../src/elements/Vertices.json'),
-                fetchJSON('../src/elements/StreetView.json')
-            ]);
+            // Fix paths to be relative to elements directory
+            const distMatrix = require('../elements/DistanceMatrix.json');
+            const nextMatrix = require('../elements/PrecomputedPaths.json');
+            const rooms = flipKeyValuePairWithMultiNodes(require('../elements/SLAVEWORK.json'));
+            const verts = require('../elements/Vertices.json');
+            const imgs = require('../elements/StreetView.json');
             
             Object.assign(data, { distMatrix, nextMatrix, rooms, verts, imgs });
         } catch (error) {
@@ -82,7 +61,6 @@ export const DataModule = (function() {
     }
 
     return {
-        fetchJSON,
         initialize,
         get: () => data
     };

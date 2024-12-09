@@ -6,6 +6,7 @@
  */
 import { Config } from '../config/config.js';
 import { StateManager } from './StateManager.js';
+import { DataModule } from './DataModule.js';
 
 export const PathTransitionHandler = {
     /** Flag to prevent recursive transition handling */
