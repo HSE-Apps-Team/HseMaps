@@ -1,4 +1,4 @@
-import * as msal from '../node_modules/@azure/msal-browser';
+import * as msal from '/node_modules/@azure/msal-browser';
 
 // MSAL configuration
 const msalConfig = {
