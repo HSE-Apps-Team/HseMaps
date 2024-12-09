@@ -176,11 +176,12 @@ export const UtilityModule = {
         }
         
         StateManager.set('distanceDomain', distanceDomain);
-
+console.log(path);
         for (let i = 0; i < path.length-1; i++) {
-            if (path[i] > Config.THRESHOLD.FLOOR_CHANGE && path[i+1] > Config.THRESHOLD.FLOOR_CHANGE) {
-                this.handleStairTransition(path, i, distMatrix, verts);
-                return RenderingModule.selectPath(path.slice(0, i), verts, undefined, "stairwell");
+            console.log(path[i], path[i+1], distMatrix[path[i]][path[i+1]]);
+            if (distMatrix[path[i]][path[i + 1]] === Config.THRESHOLD.STAIR_DISTANCE) {
+                this.handleStairTransition(path, i+1, distMatrix, verts);
+                return RenderingModule.selectPath(path.slice(0, i+1), verts, undefined, "stairwell");
             }
         }
         return RenderingModule.selectPath(path, verts);
