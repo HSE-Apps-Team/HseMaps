@@ -65,11 +65,8 @@ export const PathTransitionHandler = {
             const currentSegment = StateManager.get('currentPathSegment');
             const fullPath = StateManager.get('path');
             let a = fullPath[currentSegment]>Config.THRESHOLD.FLOOR_CHANGE;
-            let b = fullPath[currentSegment]<=Config.THRESHOLD.FLOOR_CHANGE;
             if(fullPath[0]>Config.THRESHOLD.FLOOR_CHANGE){
-                let c = a;
-                a=b;
-                b=c;
+                a = !a;
             }
             
 
@@ -84,7 +81,7 @@ export const PathTransitionHandler = {
             }
             
             // Check for transition back to first floor
-            if (b && StateManager.get('secondPathRendered')) {
+            if (!a && StateManager.get('secondPathRendered')) {
                 StateManager.set('firstPathRendered', true);
                 StateManager.set('secondPathRendered', false);
                 const onPathStart = StateManager.get('onPathStart');

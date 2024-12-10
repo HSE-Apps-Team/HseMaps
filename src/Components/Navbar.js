@@ -11,7 +11,7 @@ import {
   } from "@mui/material";
 import AuthContext from '../Auth/AuthContext';
 
-const Navbar= ({instance, loginRequest})=> {
+export const Navbar = ({ instance, loginRequest, activeTab, setActiveTab }) => {
     const { auth } = useContext(AuthContext);
 
     function signOut() {
@@ -27,6 +27,11 @@ const Navbar= ({instance, loginRequest})=> {
                 console.log(e+"login error");
             });
         }
+
+    const handleTabChange = (event, newValue) => {
+        setActiveTab(newValue);
+    };
+
   return (
     <div>
     <React.Fragment>
@@ -37,11 +42,12 @@ const Navbar= ({instance, loginRequest})=> {
                 sx={{ marginLeft: "auto",marginRight:"auto" ,color:"black"}}
                 indicatorColor="secondary"
                 textColor="inherit"
-                value={1}
+                value={activeTab}
+                onChange={handleTabChange}
               >
                 <Tab label="Navigation" value={1}/>
                 <Tab label="Schedule" value={2}/>
-                <Tab label="Setting"value={3} />
+                <Tab label="Settings"value={3} />
               </Tabs>
                 {auth.isAuth ? 
                 <>
