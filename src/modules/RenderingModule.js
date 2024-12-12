@@ -33,8 +33,8 @@ export const RenderingModule = {
     selectPath(path, verts, start = "startpt", end = "endpt", graph = document.getElementById("graph")) {
         const image = document.querySelector(Config.SVG.SELECTORS.IMAGE);
         image.href.baseVal = path[0] > Config.THRESHOLD.FLOOR_CHANGE 
-            ? Config.PATHS.COMB_SCALED 
-            : Config.PATHS.MAIN_FLOOR;
+            ? require(Config.PATHS.COMB_SCALED) 
+            : require(Config.PATHS.MAIN_FLOOR);
 
         const points = path.map(p => `${verts[p].x},${verts[p].y}`).join(' ');
         const line = this.createLine(points, graph);
