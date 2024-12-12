@@ -1,20 +1,25 @@
 // src/pages/Navigation.js
 import React, { useEffect, useRef } from 'react';
+import { ScheduleManager } from '../modules/ScheduleManager';
+import { EventHandlingModule } from '../modules/EventHandlingModule';
+import { UtilityModule } from '../modules/UtilityModule';
+
 
 export const Navigation = () => {
     const scrollRef = useRef(null);
     const progbarRef = useRef(null);
 
+
     useEffect(() => {
         const handleScroll = () => {
             if (progbarRef.current && scrollRef.current) {
                 progbarRef.current.value = scrollRef.current.scrollTop;
-                window.updateAgent?.();
+                UtilityModule.updateAgent?.();
             }
         };
 
         const handleInput = () => {
-            window.updateAgent?.();
+            UtilityModule.updateAgent?.();
         };
 
         const scrollElement = scrollRef.current;
@@ -24,6 +29,7 @@ export const Navigation = () => {
             scrollElement.addEventListener('scroll', handleScroll);
             progbarElement.addEventListener('input', handleInput);
         }
+        EventHandlingModule.displayNext();
 
         return () => {
             if (scrollElement) {
@@ -65,7 +71,7 @@ export const Navigation = () => {
                     <input className="textbox" type="text" id="start" placeholder="Start" />
                     <input className="textbox" type="text" id="end" placeholder="Destination" />
                 </div>
-                <button id="btn" onClick={() => window.markShortestPathFromInput()}>Route</button>
+                <button id="btn" onClick={() => EventHandlingModule.markShortestPathFromInput()}>Route</button>
             </div>
 
             <div id="svgdiv">
@@ -107,13 +113,19 @@ export const Navigation = () => {
             </div>
 
             <div id="schedulecontainer">
-                <input className="textbox" title="Schedule" type="text" id="sched" />
-                <input
-                    id="btn"
-                    type="button"
-                    onClick={() => window.navSchedule()}
-                    value="Schedule"
-                />
+                <select id="daySelect" onInput={()=>{EventHandlingModule.displayNext()}}>
+                    <option value="royal">Royal Day</option>
+                    <option value="gray">Gray Day</option>
+                </select>
+                
+                {}
+                <div style={{ margin: '10px 0', fontWeight: 'bold' }}>
+                <span id="nextDestination"></span>
+                </div>
+                
+                <button onClick={() => {
+                    EventHandlingModule.navSchedule()
+                }}>Route From Schedule</button>
             </div>
         </div>
     );

@@ -4,6 +4,7 @@ import { RenderingModule } from './RenderingModule.js';
 import { UtilityModule } from './UtilityModule.js';
 import { DOMCache } from './DOMCache.js';
 import { Config } from '../config/config.js';
+import { ScheduleManager } from './ScheduleManager.js';
 
 export const EventHandlingModule = {
     markShortestPathFromInput() {
@@ -15,19 +16,32 @@ export const EventHandlingModule = {
         UtilityModule.markShortestPath(start, end);
         UtilityModule.configureScroll();
     },
-
+    displayNext(){
+        const selectedDay = document.getElementById("daySelect").value;
+        const schedule = ScheduleManager.getSchedule(selectedDay);
+        const currentClass = schedule[0];
+        const nextClass = schedule[1];
+document.getElementById("nextDestination").innerText = currentClass + " -> " + nextClass;
+    },
     navSchedule() {
         RenderingModule.refresh();
-        const sched = document.getElementById("sched");
-        const classes = sched.value.split(",");
-        const iterator = StateManager.get('iterator');
-        const from = classes[iterator - 1];
-        const to = classes[iterator];
-        document.getElementById("start").value = from;
-        document.getElementById("end").value = to;
+        const selectedDay = document.getElementById("daySelect").value;
+        const schedule = ScheduleManager.getSchedule(selectedDay);
+        let iterator = StateManager.get('iterator') || 1;
+        const currentClass = schedule[iterator-1];
+        const nextClass = schedule[(iterator) % schedule.length];
+        
+        if (!schedule.length) return;
+        
+        
+        
+        document.getElementById("start").value = currentClass;
+        document.getElementById("end").value = nextClass;
+        
         this.markShortestPathFromInput();
-        StateManager.set('iterator', iterator + 1);
-        if (iterator === classes.length - 1) StateManager.set('iterator', 1);
+        StateManager.set('iterator', (iterator+1) % schedule.length);
+        iterator = StateManager.get('iterator') || 1;
+        document.getElementById("nextDestination").innerText = schedule[iterator-1] + " -> " + schedule[(iterator) % schedule.length];
     },
 
     updateSliderValue() {
