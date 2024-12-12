@@ -15,6 +15,8 @@ import { StreetViewModule } from './StreetViewModule.js';
  * @module UtilityModule
  */
 export const UtilityModule = {
+
+
     /**
      * Updates agent position, color, and orientation based on scroll progress
      * Handles both first and second floor path transitions
@@ -76,7 +78,7 @@ export const UtilityModule = {
             const point = path.getPointAtLength(dist);
             const nextPoint = path.getPointAtLength(Number(dist) + 10);
             
-            this.updateAgentPosition(agent, point, nextPoint, svg, margin);
+            UtilityModule.updateAgentPosition(agent, point, nextPoint, svg, margin);
             agent.style.fill = ColorModule.getColor(sliderCompletion);
             
             PathTransitionHandler.handleTransition(path, sliderValue, StateManager.get('totalDistance'));
@@ -86,7 +88,7 @@ export const UtilityModule = {
         }
     },
 
-    /**
+          /**
      * Updates agent position and orientation on the SVG path
      * Calculates rotation angle based on next point
      * 
@@ -108,14 +110,14 @@ export const UtilityModule = {
      * // - svg rotation = 315 degrees (pointing northeast)
      * // - viewport centered on agent with 300px margin
      */
-    updateAgentPosition(agent, point, nextPoint, svg, margin) {
-        agent.cx.baseVal.value = point.x;
-        agent.cy.baseVal.value = point.y;
-        RenderingModule.focus(agent, margin);
-        
-        const orientation = 270 - (Math.atan2(nextPoint.y - point.y, nextPoint.x - point.x) * 180 / Math.PI);
-        svg.setAttribute("style", `transform-origin: ${point.x}px ${point.y}px; transform: rotate(${orientation}deg)`);
-    },
+          updateAgentPosition(agent, point, nextPoint, svg, margin) {
+            agent.cx.baseVal.value = point.x;
+            agent.cy.baseVal.value = point.y;
+            RenderingModule.focus(agent, margin);
+            
+            const orientation = 270 - (Math.atan2(nextPoint.y - point.y, nextPoint.x - point.x) * 180 / Math.PI);
+            svg.setAttribute("style", `transform-origin: ${point.x}px ${point.y}px; transform: rotate(${orientation}deg)`);
+        },
 
     /**
      * Calculates and renders shortest path between two locations
@@ -176,11 +178,10 @@ export const UtilityModule = {
         }
         
         StateManager.set('distanceDomain', distanceDomain);
-
         for (let i = 0; i < path.length-1; i++) {
-            if (path[i] > Config.THRESHOLD.FLOOR_CHANGE && path[i+1] > Config.THRESHOLD.FLOOR_CHANGE) {
-                this.handleStairTransition(path, i, distMatrix, verts);
-                return RenderingModule.selectPath(path.slice(0, i), verts, undefined, "stairwell");
+            if (distMatrix[path[i]][path[i + 1]] === Config.THRESHOLD.STAIR_DISTANCE) {
+                this.handleStairTransition(path, i+1, distMatrix, verts);
+                return RenderingModule.selectPath(path.slice(0, i+1), verts, undefined, "stairwell");
             }
         }
         return RenderingModule.selectPath(path, verts);

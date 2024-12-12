@@ -11,12 +11,12 @@ Object.assign(window, {
 });
 
 let emails = [];
-fetchJSON('elements/ValidEmails.json').then(data => {
+fetchJSON('../src/elements/ValidEmails.json').then(data => {
     emails = data;
 });
 
 let passwords = [];
-fetchJSON('elements/ValidPasswords.json').then(data => {
+fetchJSON('../src/elements/ValidPasswords.json').then(data => {
   passwords = data;
 });
 

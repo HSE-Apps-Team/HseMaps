@@ -1,4 +1,4 @@
-    class Stats {
+    export class Stats {
       constructor(trials, func, ...args) {
           this.count = 0;
           this.mean = 0;
@@ -20,7 +20,7 @@
           if (value < this.min) {
               this.min = value;
           }
-          if (value > this.max) {
+          if (value > this.max) { 
               this.max = value;
           }
       }
@@ -52,7 +52,7 @@
     const end = performance.now();
     return end-start;
   }
-  function flipKeyValuePairWithMultiNodes(obj) {
+  export function flipKeyValuePairWithMultiNodes(obj) {
     let flipped = {};
     
     for (let node in obj) {
@@ -68,3 +68,4 @@
     
     return flipped;
 }
+

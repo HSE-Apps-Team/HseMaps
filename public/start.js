@@ -1,5 +1,5 @@
 
-import { StartModule } from './modules/StartModule.js';
+import { StartModule } from '../src/modules/StartModule.js';
 
 
 

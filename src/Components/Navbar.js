@@ -9,9 +9,9 @@ import {
     useMediaQuery,
     useTheme,
   } from "@mui/material";
-import AuthContext from '../auth/AuthContext';
+import AuthContext from '../Auth/AuthContext';
 
-const Navbar= ({instance, loginRequest})=> {
+export const Navbar = ({ instance, loginRequest, activeTab, setActiveTab }) => {
     const { auth } = useContext(AuthContext);
 
     function signOut() {
@@ -27,22 +27,27 @@ const Navbar= ({instance, loginRequest})=> {
                 console.log(e+"login error");
             });
         }
-console.log(auth)
+
+    const handleTabChange = (event, newValue) => {
+        setActiveTab(newValue);
+    };
+
   return (
     <div>
     <React.Fragment>
       <AppBar sx={{ background: "#FFFFFF" }}>
         <Toolbar>
-         <Typography variant="h5" component="div" sx={{color:"black"}}> HSE AD Boilerplate</Typography>
+         <Typography variant="h5" component="div" sx={{color:"black"}}>HSE Maps</Typography>
               <Tabs
                 sx={{ marginLeft: "auto",marginRight:"auto" ,color:"black"}}
                 indicatorColor="secondary"
                 textColor="inherit"
-                value={0}
+                value={activeTab}
+                onChange={handleTabChange}
               >
-                <Tab label="Sample Tab 1" value={1}/>
-                <Tab label="Sample Tab 2" value={1}/>
-                <Tab label="Sample Tab 3"value={1} />
+                <Tab label="Navigation" value={1}/>
+                <Tab label="Schedule" value={2}/>
+                <Tab label="Settings"value={3} />
               </Tabs>
                 {auth.isAuth ? 
                 <>

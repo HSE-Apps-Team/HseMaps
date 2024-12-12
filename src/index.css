@@ -103,6 +103,7 @@
 /* CSS DOCUMENTATION */
 body {
   background-color: var(--bg-color);
+  padding-top: 4em;
 }
 
 #theme-dropdown {

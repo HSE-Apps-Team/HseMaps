@@ -6,6 +6,7 @@
  */
 import { Config } from '../config/config.js';
 import { StateManager } from './StateManager.js';
+import { DataModule } from './DataModule.js';
 
 export const PathTransitionHandler = {
     /** Flag to prevent recursive transition handling */
@@ -63,10 +64,14 @@ export const PathTransitionHandler = {
             this.isTransitioning = true;
             const currentSegment = StateManager.get('currentPathSegment');
             const fullPath = StateManager.get('path');
+            let a = fullPath[currentSegment]>Config.THRESHOLD.FLOOR_CHANGE;
+            if(fullPath[0]>Config.THRESHOLD.FLOOR_CHANGE){
+                a = !a;
+            }
             
 
             
-            if (fullPath[currentSegment] > Config.THRESHOLD.FLOOR_CHANGE && 
+            if (a && 
                 StateManager.get('firstPathRendered')) {
                 StateManager.set('firstPathRendered', false);
                 StateManager.set('secondPathRendered', true);
@@ -76,7 +81,7 @@ export const PathTransitionHandler = {
             }
             
             // Check for transition back to first floor
-            if (fullPath[currentSegment] <= Config.THRESHOLD.FLOOR_CHANGE && StateManager.get('secondPathRendered')) {
+            if (!a && StateManager.get('secondPathRendered')) {
                 StateManager.set('firstPathRendered', true);
                 StateManager.set('secondPathRendered', false);
                 const onPathStart = StateManager.get('onPathStart');

@@ -11,8 +11,8 @@ export const Config = {
         }
     },
     PATHS: {
-        MAIN_FLOOR: 'elements/mainfloorcrunched.png',
-        COMB_SCALED: 'elements/combscaled.png'
+        MAIN_FLOOR: '../src/elements/mainfloorcrunched.png',
+        COMB_SCALED: '../src/elements/combscaled.png'
     },
     THRESHOLD: {
         FLOOR_CHANGE: 76,
@@ -26,7 +26,7 @@ export const Config = {
             RETRY: '#retry',
             SUBMIT: '#submit'
         },
-        VALID_EMAILS: 'elements/ValidEmails.json',
-        VALID_PASSWORDS: 'elements/ValidPasswords.json'
+        VALID_EMAILS: '../src/elements/ValidEmails.json',
+        VALID_PASSWORDS: '../src/elements/ValidPasswords.json'
     }
 };
