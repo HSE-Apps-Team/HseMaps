@@ -2,6 +2,8 @@ import { Config } from '../config/config.js';
 import { SVGCreator } from './SVGCreator.js';
 import { StateManager } from './StateManager.js';
 import { UtilityModule } from './UtilityModule.js';
+import MAIN_FLOOR from '../elements/mainfloorcrunched.png';
+import COMB_SCALED from '../elements/combscaled.png';
 
 /**
  * RenderingModule - Handles SVG element creation and manipulation
@@ -33,8 +35,8 @@ export const RenderingModule = {
     selectPath(path, verts, start = "startpt", end = "endpt", graph = document.getElementById("graph")) {
         const image = document.querySelector(Config.SVG.SELECTORS.IMAGE);
         image.href.baseVal = path[0] > Config.THRESHOLD.FLOOR_CHANGE 
-            ? require(Config.PATHS.COMB_SCALED) 
-            : require(Config.PATHS.MAIN_FLOOR);
+            ? COMB_SCALED
+            : MAIN_FLOOR;
 
         const points = path.map(p => `${verts[p].x},${verts[p].y}`).join(' ');
         const line = this.createLine(points, graph);
