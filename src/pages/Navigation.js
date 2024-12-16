@@ -1,25 +1,22 @@
 // src/pages/Navigation.js
 import React, { useEffect, useRef } from 'react';
-import { ScheduleManager } from '../modules/ScheduleManager';
 import { EventHandlingModule } from '../modules/EventHandlingModule';
 import { UtilityModule } from '../modules/UtilityModule';
-
 
 export const Navigation = () => {
     const scrollRef = useRef(null);
     const progbarRef = useRef(null);
 
-
     useEffect(() => {
         const handleScroll = () => {
             if (progbarRef.current && scrollRef.current) {
                 progbarRef.current.value = scrollRef.current.scrollTop;
-                UtilityModule.updateAgent?.();
+                UtilityModule.updateAgent();
             }
         };
 
         const handleInput = () => {
-            UtilityModule.updateAgent?.();
+            UtilityModule.updateAgent();
         };
 
         const scrollElement = scrollRef.current;
@@ -29,7 +26,7 @@ export const Navigation = () => {
             scrollElement.addEventListener('scroll', handleScroll);
             progbarElement.addEventListener('input', handleInput);
         }
-        EventHandlingModule.displayNext();
+        EventHandlingModule.displayNextClass();
 
         return () => {
             if (scrollElement) {
@@ -43,13 +40,6 @@ export const Navigation = () => {
 
     return (
         <div>
-            <select name="Color Theme" id="theme-dropdown">
-                <option value="light">Default</option>
-                <option value="dark">Dark</option>
-                <option value="secondary">Secondary</option>
-                <option value="winter">Winter</option>
-            </select>
-
             <h1>
                 <div id="title">
                     <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'center' }}>
@@ -71,7 +61,7 @@ export const Navigation = () => {
                     <input className="textbox" type="text" id="start" placeholder="Start" />
                     <input className="textbox" type="text" id="end" placeholder="Destination" />
                 </div>
-                <button id="btn" onClick={() => EventHandlingModule.markShortestPathFromInput()}>Route</button>
+                <button id="btn" onClick={() => EventHandlingModule.markShortestPath()}>Route</button>
             </div>
 
             <div id="svgdiv">
@@ -91,7 +81,6 @@ export const Navigation = () => {
                                     width="2048"
                                     height="1308"
                                     preserveAspectRatio="none"
-                                    href="/elements/mainfloorcrunched.png"
                                 />
                                 <g id="graph"></g>
                             </g>
@@ -113,19 +102,16 @@ export const Navigation = () => {
             </div>
 
             <div id="schedulecontainer">
-                <select id="daySelect" onInput={()=>{EventHandlingModule.displayNext()}}>
+                <select id="daySelect" onInput={EventHandlingModule.displayNextClass}>
                     <option value="royal">Royal Day</option>
                     <option value="gray">Gray Day</option>
                 </select>
                 
-                {}
                 <div style={{ margin: '10px 0', fontWeight: 'bold' }}>
-                <span id="nextDestination"></span>
+                    <span id="nextDestination"></span>
                 </div>
                 
-                <button onClick={() => {
-                    EventHandlingModule.navSchedule()
-                }}>Route From Schedule</button>
+                <button onClick={EventHandlingModule.navigateSchedule}>Route From Schedule</button>
             </div>
         </div>
     );

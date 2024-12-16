@@ -1,97 +1,68 @@
 /**
- * PathTransitionHandler - Manages transitions between floor levels
- * Handles state changes during path traversal and prevents recursive updates
- * 
  * @module PathTransitionHandler
+ * @description Manages transitions between floors during path navigation
  */
+
 import { Config } from '../config/config.js';
 import { StateManager } from './StateManager.js';
 import { DataModule } from './DataModule.js';
 
 export const PathTransitionHandler = {
-    /** Flag to prevent recursive transition handling */
+    /**
+     * @type {boolean}
+     * @description Flag indicating if a floor transition is in progress
+     */
     isTransitioning: false,
 
     /**
-     * Handles state transitions during path traversal
-     * Manages transitions between floors and triggers appropriate callbacks
-     * 
-     * @param {SVGGeometryElement} path - SVG path element being traversed
-     * @param {number} sliderValue - Current position along the path (0 to pathLength)
-     * @param {number} totalDistance - Total path distance including both floors
+     * @function handleTransition
      * @returns {boolean} True if transition occurred, false otherwise
-     * 
-     * @example First floor to second floor
-     * // Given:
-     * path.getTotalLength() = 100
-     * sliderValue = 100          // At end of first floor
-     * totalDistance = 200
-     * StateManager.get('firstPathRendered') = true
-     * 
-     * handleTransition(path, 100, 200)
-     * // Results in:
-     * // - firstPathRendered = false
-     * // - secondPathRendered = true
-     * // - onPathEnd() called
-     * // Returns: true
-     * 
-     * @example Second floor to first floor
-     * // Given:
-     * path.getTotalLength() = 100
-     * sliderValue = 0           // At start of second floor
-     * totalDistance = 200
-     * StateManager.get('secondPathRendered') = true
-     * 
-     * handleTransition(path, 0, 200)
-     * // Results in:
-     * // - firstPathRendered = true
-     * // - secondPathRendered = false
-     * // - onPathStart() called
-     * // Returns: true
-     * 
-     * @example No transition needed
-     * // Given:
-     * sliderValue = 50         // Middle of current floor
-     * 
-     * handleTransition(path, 50, 200)
-     * // Returns: false (no state change)
+     * @description Handles floor transitions based on current path segment
      */
-    handleTransition(path, sliderValue, totalDistance) {
-        // Guard against recursive calls during state updates
+    handleTransition() {
         if (this.isTransitioning) return false;
         
-        try {
-            this.isTransitioning = true;
-            const currentSegment = StateManager.get('currentPathSegment');
-            const fullPath = StateManager.get('path');
-            let a = fullPath[currentSegment]>Config.THRESHOLD.FLOOR_CHANGE;
-            if(fullPath[0]>Config.THRESHOLD.FLOOR_CHANGE){
-                a = !a;
-            }
-            
-
-            
-            if (a && 
-                StateManager.get('firstPathRendered')) {
-                StateManager.set('firstPathRendered', false);
-                StateManager.set('secondPathRendered', true);
-                const onPathEnd = StateManager.get('onPathEnd');
-                if (onPathEnd) onPathEnd();
-                return true;
-            }
-            
-            // Check for transition back to first floor
-            if (!a && StateManager.get('secondPathRendered')) {
-                StateManager.set('firstPathRendered', true);
-                StateManager.set('secondPathRendered', false);
-                const onPathStart = StateManager.get('onPathStart');
-                if (onPathStart) onPathStart();
-                return true;
-            }
-            
-            return false;
-        } finally {
-            this.isTransitioning = false;
+        this.isTransitioning = true;
+        const currentSegment = StateManager.get('currentPathSegment');
+        const fullPath = StateManager.get('path');
+        let isSecondFloor = fullPath[currentSegment] > Config.THRESHOLD.FLOOR_CHANGE;
+        
+        if (fullPath[0] > Config.THRESHOLD.FLOOR_CHANGE) {
+            isSecondFloor = !isSecondFloor;
         }
+
+        const needsTransition = isSecondFloor ? 
+            StateManager.get('firstPathRendered') : 
+            StateManager.get('secondPathRendered');
+
+        if (needsTransition) {
+            StateManager.set('firstPathRendered', !isSecondFloor);
+            StateManager.set('secondPathRendered', isSecondFloor);
+            const callback = isSecondFloor ? 
+                StateManager.get('onPathEnd') : 
+                StateManager.get('onPathStart');
+            if (callback) callback();
+            this.isTransitioning = false;
+            return true;
+        }
+
+        this.isTransitioning = false;
+        return false;
+    },
+    
+    /**
+     * @function getStairIndex
+     * @param {number[]} path - Array of vertex indices
+     * @returns {number} Index of stair transition point or -1 if none found
+     * @description Finds the index where the path transitions between floors
+     */
+    getStairIndex(path){
+        const { distMatrix } = DataModule.get();
+        for (let i = 0; i < path.length-1; i++) {
+            if (distMatrix[path[i]][path[i + 1]] === Config.THRESHOLD.STAIR_DISTANCE) {
+                return i+1;
+            }
+        }
+        return -1;
     }
 };

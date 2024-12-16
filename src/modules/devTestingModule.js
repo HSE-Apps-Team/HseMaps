@@ -1,71 +1,37 @@
-    export class Stats {
-      constructor(trials, func, ...args) {
-          this.count = 0;
-          this.mean = 0;
-          this.M2 = 0;  // Sum of squares of differences from the mean
-          this.min = Infinity;
-          this.max = -Infinity;
-          for (let i = 0; i < trials; i++) {
-              this.addValue(measureExecutionTime(func, ...args));
-          }
-      }
-  
-      addValue(value) {
-          this.count++;
-          
-          const delta = value - this.mean;
-          this.mean += delta / this.count;
-          this.M2 += delta * (value - this.mean);
-          
-          if (value < this.min) {
-              this.min = value;
-          }
-          if (value > this.max) { 
-              this.max = value;
-          }
-      }
-  
-      getMean() {
-          return this.mean;
-      }
-  
-      getVariance() {
-          return this.count > 1 ? this.M2 / this.count : 0;
-      }
-  
-      getStdDev() {
-          return Math.sqrt(this.getVariance());
-      }
-  
-      getMin() {
-          return this.min;
-      }
-  
-      getMax() {
-          return this.max;
-      }
-  }
+/**
+ * Converts a node-to-rooms mapping into a room-to-nodes mapping.
+ * @param {Object.<string, string[]>} obj - Object mapping node IDs to arrays of room names
+ * @returns {Object.<string, string[]>} Object mapping room names to arrays of node IDs
+ * @throws {Error} If input is null, undefined, or not an object
+ */
+export function flipKeyValuePairWithMultiNodes(obj) {
+    if (!obj || typeof obj !== 'object') {
+        throw new Error('Input must be a valid object mapping nodes to rooms');
+    }
 
-  function measureExecutionTime(func, ...args) {
-    const start = performance.now();
-    const result = func(...args);
-    const end = performance.now();
-    return end-start;
-  }
-  export function flipKeyValuePairWithMultiNodes(obj) {
-    let flipped = {};
-    
-    for (let node in obj) {
-        if (obj.hasOwnProperty(node)) {
-            obj[node].forEach(room => {
-                if (!flipped[room]) {
-                    flipped[room] = [];
+    const flipped = {};
+    try {
+        for (const [node, rooms] of Object.entries(obj)) {
+            if (!Array.isArray(rooms)) {
+                console.warn(`Invalid room array for node ${node}, skipping`);
+                continue;
+            }
+
+            rooms.forEach(room => {
+                if (typeof room !== 'string') {
+                    console.warn(`Invalid room type for node ${node}, skipping`);
+                    return;
                 }
-                flipped[room].push(node);
+                if (!flipped[room]) flipped[room] = [];
+                if (!flipped[room].includes(node)) {
+                    flipped[room].push(node);
+                }
             });
         }
+        return flipped;
+    } catch (error) {
+        console.error('Error flipping node-room mapping:', error);
+        return {};
     }
-    
-    return flipped;
 }
 

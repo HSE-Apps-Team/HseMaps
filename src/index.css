@@ -100,19 +100,69 @@
   --filter: none;
 }
 
+[data-theme="deuteranopia"] {
+  --primary-color: #0077BB;
+  --secondary-color: #004466;
+  --font-color: #000000;
+  --bg-color: #FFFFFF;
+  --heading-color: #EE7733;
+  --border-color: #0077BB;
+  --button-color1: #009988;
+  --button-color2: #33BBEE;
+  --button-color3: #EE7733;
+  --button-font-color: #FFFFFF;
+  --filter: url('#deuteranopia-filter');
+}
+
+[data-theme="protanopia"] {
+  --primary-color: #0066FF;
+  --secondary-color: #003399;
+  --font-color: #000000;
+  --bg-color: #FFFFFF;
+  --heading-color: #FFBB33;
+  --border-color: #0066FF;
+  --button-color1: #00CC99;
+  --button-color2: #33BBFF;
+  --button-color3: #FFBB33;
+  --button-font-color: #FFFFFF;
+  --filter: url('#protanopia-filter');
+}
+
+[data-theme="tritanopia"] {
+  --primary-color: #CC3311;
+  --secondary-color: #882211;
+  --font-color: #000000;
+  --bg-color: #FFFFFF;
+  --heading-color: #EE3377;
+  --border-color: #CC3311;
+  --button-color1: #009988;
+  --button-color2: #882255;
+  --button-color3: #EE3377;
+  --button-font-color: #FFFFFF;
+  --filter: url('#tritanopia-filter');
+}
+
+
+[data-theme="monochrome"] {
+  --primary-color: #404040;
+  --secondary-color: #595959;
+  --font-color: #000000;
+  --bg-color: #FFFFFF;
+  --heading-color: #262626;
+  --border-color: #404040;
+  --button-color1: #737373;
+  --button-color2: #595959;
+  --button-color3: #404040;
+  --button-font-color: #FFFFFF;
+  --filter: grayscale(100%) contrast(120%);
+}
+
 /* CSS DOCUMENTATION */
 body {
   background-color: var(--bg-color);
   padding-top: 4em;
 }
 
-#theme-dropdown {
-  position: absolute;
-  top: 0;
-  right: 0;
-  margin: 0.5em;
-  z-index: 100;
-}
 
 #map {
   filter: var(--filter);
@@ -249,3 +299,5 @@ html {
   background-color: var(--button-color3);
   border: solid var(--border-color) 2px;
 }
+
+/* Add SVG filters to HTML */

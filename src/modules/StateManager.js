@@ -1,98 +1,85 @@
-/**
- * StateManager - Central state management for path navigation
- * Uses Proxy for reactive state updates and floor transition handling
- * 
- * @module StateManager
- */
-export const StateManager = (() => {
-    /**
-     * Internal state object with Proxy wrapper
-     * @type {Proxy}
-     * 
-     * State Properties:
-     * @property {number} totalDistance - Total path length across all floors
-     * @property {boolean} firstPathRendered - Whether first floor path is active
-     * @property {boolean} secondPathRendered - Whether second floor path is active
-     * @property {string} currentFloor - Current active floor ('main'|'second')
-     * @property {Function} skipStart - Controls start point rendering
-     * @property {Function} skipEnd - Controls end point rendering
-     * @property {Function} onPathStart - Callback for first floor transition
-     * @property {Function} onPathEnd - Callback for second floor transition
-     * @property {number} iterator - Current position in navigation sequence
-     * @property {Array} path - Array to store the path
-     * @property {Array} distanceDomain - Array to store the distance domain
-     * @property {Object|null} currentPathSegment - Current path segment
-     * 
-     * @example State structure
-     * state = {
-     *   totalDistance: 150,      // Path length in pixels
-     *   firstPathRendered: true, // On first floor
-     *   secondPathRendered: false,// Second floor not active
-     *   currentFloor: 'main',    // Currently on main floor
-     *   skipStart: () => true,   // Skip start point
-     *   skipEnd: () => false,    // Show end point
-     *   onPathStart: () => {},   // Floor transition callback
-     *   onPathEnd: () => {},     // Floor transition callback
-     *   iterator: 1,             // First waypoint
-     *   path: [],                // Path array
-     *   distanceDomain: [],      // Distance domain array
-     *   currentPathSegment: null // Current path segment
-     * }
-     */
-    const state = new Proxy({
-        totalDistance: 0,
-        firstPathRendered: true,
-        secondPathRendered: false,
-        currentFloor: 'main',
-        skipStart: () => true,
-        skipEnd: () => false,
-        onPathStart: () => {},
-        onPathEnd: () => {},
-        iterator: 1,
-        path: [],
-        distanceDomain: [],
-        currentPathSegment: null
-    }, {
-        /**
-         * Proxy trap for state updates
-         * Handles floor transitions when secondPathRendered changes
-         * 
-         * @example Floor transition
-         * StateManager.set('secondPathRendered', true)
-         * // Results in:
-         * // - secondPathRendered = true
-         * // - currentFloor = 'second'
-         */
-        set(target, key, value) {
-            target[key] = value;
-            if (key === 'secondPathRendered') {
-                target.currentFloor = value ? 'second' : 'main';
-            }
-            return true;
-        }
-    });
+import { createContext, useContext, useState } from 'react';
 
-    /**
-     * Public interface for state management
-     * @example Usage
-     * // Get single value
-     * StateManager.get('totalDistance') // Returns: 150
-     * 
-     * // Get entire state
-     * StateManager.get() // Returns: {...state}
-     * 
-     * // Set state value
-     * StateManager.set('totalDistance', 200)
-     * // Results in state.totalDistance = 200
-     * 
-     * // Set floor transition
-     * StateManager.set('secondPathRendered', true)
-     * // Results in:
-     * // - state.secondPathRendered = true
-     * // - state.currentFloor = 'second'
-     */
-    return {
-        get: key => key ? state[key] : state,
-        set: (key, value) => { state[key] = value; }
+/**
+ * @module StateManager
+ * @description Manages global application state using a hybrid approach combining 
+ * legacy object-based state and modern React Context API. Implements validation
+ * rules for critical path properties to ensure data integrity.
+ * 
+ * @example
+ * // Using legacy API
+ * StateManager.set('path', [1, 2, 3]);
+ * const path = StateManager.get('path');
+ * 
+ * // Using modern Context API
+ * const { state, updateState } = useStateManager();
+ * updateState('path', [1, 2, 3]);
+ */
+
+/**
+ * @type {Object.<string, function>}
+ * @description Validation functions that enforce data integrity rules:
+ * - path: Must be an array for storing navigation waypoints
+ * - totalDistance: Must be a non-negative number representing total path length
+ * - currentPathSegment: Must be null or a non-negative number for current position
+ */
+const validators = {
+    path: Array.isArray,
+    totalDistance: value => typeof value === 'number' && value >= 0,
+    currentPathSegment: value => value === null || (typeof value === 'number' && value >= 0)
+};
+
+// Maintain backward compatibility with existing code
+const state = {
+    totalDistance: 0,
+    firstPathRendered: true,
+    secondPathRendered: false,
+    currentFloor: 'main',
+    path: [],
+    distanceDomain: [],
+    currentPathSegment: null,
+    maskedImages: null
+};
+
+// Legacy StateManager API
+export const StateManager = {
+    get: key => key ? state[key] : state,
+    set: (key, value) => {
+        if (validators[key] && !validators[key](value)) return false;
+        state[key] = value;
+        if (key === 'secondPathRendered') {
+            state.currentFloor = value ? 'second' : 'main';
+        }
+        return true;
+    }
+};
+
+// Modern React Context API
+const StateContext = createContext({ state, updateState: () => {} });
+
+export const StateProvider = ({ children }) => {
+    const [contextState, setContextState] = useState(state);
+
+    const updateState = (key, value) => {
+        if (validators[key]?.(value) === false) return;
+        
+        setContextState(prev => ({
+            ...prev,
+            [key]: value,
+            ...(key === 'secondPathRendered' && {
+                currentFloor: value ? 'second' : 'main'
+            })
+        }));
+        
+        // Keep legacy state in sync
+        StateManager.set(key, value);
     };
-})();
+
+    return (
+        <StateContext.Provider value={{ state: contextState, updateState }}>
+            {children}
+        </StateContext.Provider>
+    );
+};
+
+export const useStateManager = () => useContext(StateContext);
