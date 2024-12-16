@@ -1,74 +1,54 @@
-/**
- * SVGCreator - Utility module for creating SVG elements with attributes
- * Handles complex attribute paths and class assignments
- * 
- * @module SVGCreator
- */
 import { Config } from '../config/config.js';
 
+/**
+ * @module SVGCreator
+ * @description Provides utilities for creating and configuring SVG elements
+ * with proper namespace handling and attribute setting.
+ */
 export const SVGCreator = {
     /**
-     * Creates an SVG element with specified attributes and classes
-     * Supports dot notation for complex attribute paths
-     * 
-     * @param {string} type - SVG element type (e.g., 'circle', 'polyline')
-     * @param {Object} attributes - Key-value pairs of attributes to set
-     * @param {string[]} classList - Array of CSS classes to add
-     * @returns {SVGElement} Created SVG element
-     * 
-     * @example Simple circle
-     * createElement('circle', {
-     *   cx: 100,
-     *   cy: 100,
-     *   r: 10,
-     *   fill: 'red'
-     * })
-     * // Returns: <circle cx="100" cy="100" r="10" fill="red"/>
-     * 
-     * @example Complex attributes with dot notation
-     * createElement('circle', {
-     *   'cx.baseVal': 100,
-     *   'cy.baseVal': 100,
-     *   'r.baseVal': 10
-     * })
-     * // Returns: <circle> with baseVal properties set
-     * // circle.cx.baseVal = 100
-     * // circle.cy.baseVal = 100
-     * // circle.r.baseVal = 10
-     * 
-     * @example Element with classes
-     * createElement('polyline', 
-     *   { points: '0,0 100,100' },
-     *   ['line', 'selected']
-     * )
-     * // Returns: <polyline points="0,0 100,100" class="line selected"/>
-     * 
-     * @example Mixed attributes
-     * createElement('path', {
-     *   'd': 'M0 0L100 100',
-     *   'stroke-width': 2,
-     *   'transform.baseVal.consolidate': null
-     * }, ['path', 'animated'])
-     * // Returns: <path d="M0 0L100 100" stroke-width="2" class="path animated"/>
-     * // with transform.baseVal.consolidate() called
+     * Creates an SVG element with specified attributes and class list.
+     * @param {string} type - The type of SVG element to create (e.g., 'circle', 'path')
+     * @param {Object} [attributes={}] - Key-value pairs of attributes to set on the element
+     * @param {string[]} [classList=[]] - Array of CSS classes to apply to the element
+     * @returns {SVGElement} The created SVG element
+     * @throws {Error} When type is invalid or element creation fails
      */
     createElement(type, attributes = {}, classList = []) {
-        // Create element with correct namespace
-        const element = document.createElementNS(Config.SVG.NAMESPACE, type);
+        try {
+            if (!type || typeof type !== 'string') {
+                throw new Error('Invalid SVG element type');
+            }
 
-        // Apply attributes
-        Object.entries(attributes).forEach(([key, value]) => {
-            key.includes('.') 
-                // Handle nested properties (e.g., 'cx.baseVal')
-                ? key.split('.').reduce((obj, prop, i, arr) => 
-                    i === arr.length - 1 ? obj[prop].value = value : obj[prop], element)
-                // Set direct attributes
-                : element.setAttribute(key, value);
-        });
+            const element = document.createElementNS(Config.SVG.NAMESPACE, type);
 
-        // Add classes if provided
-        if (classList.length) element.classList.add(...classList);
+            Object.entries(attributes).forEach(([key, value]) => {
+                try {
+                    if (key.includes('.')) {
+                        key.split('.').reduce((obj, prop, i, arr) => {
+                            if (i === arr.length - 1) {
+                                if (obj && obj[prop] && 'value' in obj[prop]) {
+                                    obj[prop].value = value;
+                                }
+                            }
+                            return obj ? obj[prop] : null;
+                        }, element);
+                    } else {
+                        element.setAttribute(key, value);
+                    }
+                } catch (attrError) {
+                    console.warn(`Failed to set attribute ${key}:`, attrError);
+                }
+            });
 
-        return element;
+            if (Array.isArray(classList) && classList.length) {
+                element.classList.add(...classList.filter(c => typeof c === 'string'));
+            }
+
+            return element;
+        } catch (error) {
+            console.error('SVG element creation failed:', error);
+            throw error;
+        }
     }
 };

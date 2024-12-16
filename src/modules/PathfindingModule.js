@@ -1,91 +1,87 @@
 /**
- * PathfindingModule - Handles path construction and node selection for navigation
- * Provides methods for finding optimal paths between rooms and reconstructing paths
- * from precomputed matrices
- * 
  * @module PathfindingModule
+ * @description Implements optimized pathfinding algorithms using Floyd-Warshall's pre-computed matrices.
+ * Provides efficient path reconstruction and node selection based on distance heuristics.
  */
-export const PathfindingModule = {
+
+export class PathfindingModule {
     /**
-     * Constructs a path between two vertices using a next-vertex matrix
-     * @param {number[][]} nextMatrix - Matrix containing next vertex in shortest path
-     * @param {number} u - Starting vertex index
-     * @param {number} v - Ending vertex index
-     * @returns {number[]} Array of vertex indices forming the path
-     * 
+     * Reconstructs optimal path using pre-computed next vertex information
+     * @param {number[][]} nextMatrix - Pre-computed matrix where nextMatrix[i][j] represents 
+     *                                  the next vertex to visit when going from i to j
+     * @param {number} start - Index of starting vertex in the graph
+     * @param {number} end - Index of destination vertex in the graph
+     * @returns {number[]} Array of vertex indices forming the shortest path from start to end.
+     *                     Returns empty array if no valid path exists.
      * @example
-     * // Given nextMatrix:
-     * // [[0, 1, 2],
-     * //  [1, 1, 2],
-     * //  [2, 2, 2]]
-     * constructPath(nextMatrix, 0, 2)
-     * // Returns: [0, 1, 2]
-     * 
-     * @example Edge case - no path exists
-     * constructPath(nextMatrix, 0, 3)
-     * // Returns: []
+     * const path = PathfindingModule.constructPath(nextMatrix, 0, 5);
+     * // Returns [0, 2, 3, 5] representing the optimal path from vertex 0 to 5
      */
-    constructPath(nextMatrix, u, v) {
-        if (!nextMatrix[u]?.[v]) return [];
-        const path = [u];
-        while (path[path.length - 1] !== v) {
-            const next = nextMatrix[path[path.length - 1]][v];
-            if (!next && next !== 0) break;
+    static constructPath(nextMatrix, start, end) {
+        if (!this.validateMatrix(nextMatrix, start, end)) return [];
+        
+        const path = [start];
+        let current = start;
+        
+        while (current !== end) {
+            const next = nextMatrix[current]?.[end];
+            if (next == null) break;
             path.push(next);
+            current = next;
         }
+        
         return path;
-    },
+    }
 
     /**
-     * Selects the best node from a set based on minimum distance to goal nodes
-     * @param {number[]} nodes - Array of candidate node indices
-     * @param {number[]} goalNodes - Array of target node indices
-     * @param {number[][]} distMatrix - Matrix of distances between nodes
-     * @returns {number|null} Index of best node or null if no valid node found
-     * 
+     * Determines optimal node from candidates based on distance to goals
+     * @param {number[]} nodes - Array of candidate node indices to evaluate
+     * @param {number[]} goals - Array of target node indices to measure against
+     * @param {number[][]} distMatrix - Matrix of pre-computed distances between all vertices
+     * @returns {number|null} Index of the optimal node, or null if no valid node found
      * @example
-     * // Given distMatrix:
-     * // [[0, 5, Infinity],
-     * //  [5, 0, 3],
-     * //  [Infinity, 3, 0]]
-     * selectBestNode([0, 1], [2], distMatrix)
-     * // Returns: 1 (node 1 has shortest path to goal node 2)
-     * 
-     * @example No valid path
-     * selectBestNode([0], [2], distMatrix)
-     * // Returns: null (no path from node 0 to goal node 2)
+     * const bestNode = PathfindingModule.selectBestNode([1,2,3], [10,11], distMatrix);
+     * // Returns the node index from [1,2,3] that's closest to either 10 or 11
      */
-    selectBestNode(nodes, goalNodes, distMatrix) {
+    static selectBestNode(nodes, goals, distMatrix) {
+        if (!nodes?.length || !goals?.length) return null;
+        
         return nodes.reduce((best, node) => {
-            const minDist = Math.min(...goalNodes.map(goal => 
+            const minDist = Math.min(...goals.map(goal => 
                 distMatrix[node]?.[goal] ?? Infinity
             ));
             return minDist < best.dist ? { node, dist: minDist } : best;
         }, { node: null, dist: Infinity }).node;
-    },
+    }
 
     /**
-     * Finds shortest path between two rooms using precomputed matrices
-     * @param {number[][]} nextMatrix - Matrix containing next vertex in shortest path
-     * @param {number[][]} distMatrix - Matrix of distances between nodes
+     * Finds shortest path between rooms using precomputed matrices
+     * @static
+     * @param {Array<Array<number>>} nextMatrix - Next vertex matrix
+     * @param {Array<Array<number>>} distMatrix - Distance matrix
      * @param {string} startRoom - Starting room identifier
-     * @param {string} endRoom - Destination room identifier
-     * @param {Object<string, number[]>} rooms - Map of room IDs to vertex indices
+     * @param {string} endRoom - Ending room identifier
+     * @param {Object.<string, number[]>} rooms - Room to vertices mapping
      * @returns {number[]} Array of vertex indices forming the shortest path
-     * 
-     * @example
-     * // Given room mapping:
-     * // rooms = { "ROOM101": [0, 1], "ROOM102": [2] }
-     * minPathBtwRooms(nextMatrix, distMatrix, "ROOM101", "ROOM102", rooms)
-     * // Returns: [1, 2] (shortest path from ROOM101 to ROOM102)
-     * 
-     * @example No valid path
-     * minPathBtwRooms(nextMatrix, distMatrix, "ROOM101", "ROOM999", rooms)
-     * // Returns: [] (no path exists or invalid room)
      */
-    minPathBtwRooms(nextMatrix, distMatrix, startRoom, endRoom, rooms) {
+    static findShortestPath(nextMatrix, distMatrix, startRoom, endRoom, rooms) {
+        if (!rooms[startRoom] || !rooms[endRoom]) return [];
+        if (startRoom === endRoom) return [];
+
         const startNode = this.selectBestNode(rooms[startRoom], rooms[endRoom], distMatrix);
+        if (startNode == null) return [];
+
         const endNode = this.selectBestNode(rooms[endRoom], [startNode], distMatrix);
+        if (endNode == null) return [];
+
         return this.constructPath(nextMatrix, startNode, endNode);
     }
-};
+
+    /**
+     * Validates path finding input parameters
+     * @private
+     */
+    static validateMatrix(matrix, start, end) {
+        return matrix?.[start]?.[end] != null;
+    }
+}

@@ -1,11 +1,10 @@
-// src/pages/Schedule.js
 import React, { useState } from 'react';
 import { Container, Typography, Paper } from '@mui/material';
 import { ScheduleManager } from '../modules/ScheduleManager';
 
 export const Schedule = () => {
-    const [royalRooms, setRoyalRooms] = useState(ScheduleManager.getSchedule('royal'));
-    const [grayRooms, setGrayRooms] = useState(ScheduleManager.getSchedule('gray'));
+    const [royalRooms, setRoyalRooms] = useState(ScheduleManager.load('royal'));
+    const [grayRooms, setGrayRooms] = useState(ScheduleManager.load('gray'));
     const [newRoom, setNewRoom] = useState('');
     const [selectedDay, setSelectedDay] = useState('royal');
 
@@ -20,7 +19,7 @@ export const Schedule = () => {
             setGrayRooms(updatedRooms);
         }
         
-        ScheduleManager.saveSchedule(selectedDay, updatedRooms);
+        ScheduleManager.save(selectedDay, updatedRooms);
         setNewRoom('');
     };
 
@@ -34,7 +33,7 @@ export const Schedule = () => {
             setGrayRooms(updatedRooms);
         }
         
-        ScheduleManager.saveSchedule(selectedDay, updatedRooms);
+        ScheduleManager.save(selectedDay, updatedRooms);
     };
 
     return (
