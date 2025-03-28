@@ -32,10 +32,6 @@ The project follows a modular architecture with clear separation of concerns:
 3. Run development server: `npm start`
 4. Build production: `npm run build`
 
-## Testing
-
-Run tests with: `npm test`
-
 ## Contributing
 
 1. Fork the repository
