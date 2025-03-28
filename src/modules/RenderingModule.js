@@ -148,6 +148,8 @@ export const RenderingModule = {
             [startPoint, agent, endPoint].forEach(el => 
                 graph.insertAdjacentElement("beforeend", el));
 
+
+
             UtilityModule.updateAgent();
             return line;
         } catch (error) {

@@ -7,6 +7,7 @@ import { ScheduleManager } from './ScheduleManager.js';
 import { DataModule } from './DataModule.js';
 import { PathTransitionHandler } from './PathTransitionHandler.js';
 import { PathfindingModule } from './PathfindingModule.js';
+import { NavigationController } from './NavigationController.js';
 import mainFloorImage from '../elements/mainfloorcrunched.png';
 import combFloorImage from '../elements/combscaled.png';
 
@@ -22,6 +23,7 @@ export const EventHandlingModule = {
      * @throws {Error} If room selection or path finding fails
      */
     async markShortestPath() {
+        // Existing room validation and path calculation
         const start = document.getElementById("start").value?.toUpperCase();
         const end = document.getElementById("end").value?.toUpperCase();
         
@@ -42,27 +44,34 @@ export const EventHandlingModule = {
             return;
         }
 
+        // Reset rendering state
         RenderingModule.refresh();
         StateManager.set('firstPathRendered', true);
         StateManager.set('secondPathRendered', false);
         StateManager.set('maskedImages', null);
+        
+        // Prepare UI
         DOMCache[Config.SVG.SELECTORS.PROGBAR].value = 0;
         DOMCache[Config.SVG.SELECTORS.SCROLL].scrollTop = 0;
         
+        // Calculate path
         const path = PathfindingModule.findShortestPath(nextMatrix, distMatrix, start, end, rooms);
         if (!path?.length) {
             alert("No valid path found between these rooms");
             return;
         }
-        StateManager.set('path', path);
         
+        // Generate visualization data
         const vertices = DataModule.get().verts;
         const stairIndex = PathTransitionHandler.getStairIndex(path);
         const points = path.map(p => `${vertices[p].x},${vertices[p].y}`);
         let segments = [points.slice(0, stairIndex).join(' '), points.slice(stairIndex).join(' ')];
+        
         if (stairIndex === -1) {
             segments = [points.join(' '), ''];
         }
+        
+        // Set up floor masks
         let [firstFloorImage, secondFloorImage] = [mainFloorImage, combFloorImage];
         let [firstFloor, secondFloor] = ['main', 'comb'];
         
@@ -70,11 +79,13 @@ export const EventHandlingModule = {
             [firstFloorImage, secondFloorImage] = [combFloorImage, mainFloorImage];
             [firstFloor, secondFloor] = ['comb', 'main'];
         }
+        
         await RenderingModule.generateMask(segments[0], firstFloorImage, firstFloor);
         await RenderingModule.generateMask(segments[1], secondFloorImage, secondFloor);
         
-        UtilityModule.markShortestPath();
-        UtilityModule.configureScroll();
+        // Initialize path for navigation
+        NavigationController.initializePath(path);
+        NavigationController.configureScroll();
     },
 
     /**

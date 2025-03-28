@@ -46,12 +46,28 @@ export class PathfindingModule {
     static selectBestNode(nodes, goals, distMatrix) {
         if (!nodes?.length || !goals?.length) return null;
         
-        return nodes.reduce((best, node) => {
-            const minDist = Math.min(...goals.map(goal => 
-                distMatrix[node]?.[goal] ?? Infinity
-            ));
-            return minDist < best.dist ? { node, dist: minDist } : best;
-        }, { node: null, dist: Infinity }).node;
+        let bestNode = null;
+        let bestDistance = Infinity;
+        
+        for (let i = 0; i < nodes.length; i++) {
+            const node = nodes[i];
+            let minDistToGoal = Infinity;
+            
+            for (let j = 0; j < goals.length; j++) {
+                const goal = goals[j];
+                const dist = distMatrix[node]?.[goal] ?? Infinity;
+                if (dist < minDistToGoal) {
+                    minDistToGoal = dist;
+                }
+            }
+            
+            if (minDistToGoal < bestDistance) {
+                bestDistance = minDistToGoal;
+                bestNode = node;
+            }
+        }
+        
+        return bestNode;
     }
 
     /**

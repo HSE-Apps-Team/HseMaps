@@ -5,6 +5,7 @@ import { ColorModule } from './ColorModule.js';
 import { PathTransitionHandler } from './PathTransitionHandler.js';
 import { RenderingModule } from './RenderingModule.js';
 import { DataModule } from './DataModule.js';
+import { StreetViewModule } from './StreetViewModule.js';
 
 /**
  * @module UtilityModule
@@ -24,7 +25,8 @@ export const UtilityModule = {
             path: DOMCache[`${Config.SVG.SELECTORS.GRAPH} > polyline`],
             progbar: DOMCache[Config.SVG.SELECTORS.PROGBAR],
             svg: DOMCache[Config.SVG.SELECTORS.SVGRAPH],
-            image: DOMCache[Config.SVG.SELECTORS.IMAGE]
+            image: DOMCache[Config.SVG.SELECTORS.IMAGE],
+            svgdiv: DOMCache[Config.SVG.SELECTORS.SVGDIV]
         };
 
         // Only warn if we're expecting elements to exist
@@ -35,7 +37,7 @@ export const UtilityModule = {
         }
 
         try {
-            const { agent, path, progbar, svg } = elements;
+            const { agent, path, progbar, svg, svgdiv } = elements;
             const sliderValue = progbar.value;
             const sliderCompletion = sliderValue / progbar.max;
             
@@ -43,6 +45,8 @@ export const UtilityModule = {
             const currentPathSegment = distanceDomain.findIndex((e, i) => 
                 sliderValue >= distanceDomain[i] && sliderValue < (distanceDomain[i + 1] || Infinity)
             );
+            
+            
             StateManager.set('currentPathSegment', currentPathSegment);
 
             const dist = StateManager.get('secondPathRendered')
@@ -54,6 +58,7 @@ export const UtilityModule = {
             
             this.updateAgentPosition(agent, point, nextPoint, svg, margin);
             agent.style.fill = ColorModule.getColor(sliderCompletion);
+            svgdiv.style.backgroundImage = `url(${StreetViewModule.getImage()})`;
             
             PathTransitionHandler.handleTransition();
         } catch (error) {

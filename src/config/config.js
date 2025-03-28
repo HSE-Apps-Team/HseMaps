@@ -14,13 +14,16 @@ export const Config = {
             AGENT: '#agent',
             IMAGE: '#svgraph > g > image',
             PROGBAR: '#progbar',
-            SCROLL: '#scroll'
+            SCROLL: '#scroll',
+            SVG: '#svg',
+            SVGDIV: '#svgdiv'
         }
     },
     /** @namespace PATHS - Asset file paths */
     PATHS: {
         MAIN_FLOOR: '../src/elements/mainfloorcrunched.png',
-        COMB_SCALED: '../src/elements/combscaled.png'
+        COMB_SCALED: '../src/elements/combscaled.png',
+        STREET_VIEW: '../src/elements/StreetImages/'
     },
     /** @namespace THRESHOLD - System thresholds and limits */
     THRESHOLD: {

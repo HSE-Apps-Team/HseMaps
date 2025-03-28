@@ -213,6 +213,7 @@ body {
 #svgdiv {
   width: 96vmin;
   margin: auto;
+  background-repeat: round;
 }
 
 svg {
@@ -222,6 +223,9 @@ svg {
   margin: auto;
   border: var(--border-color) solid 2px;
   border-radius: 1em;
+}
+#svgraph{
+  filter: opacity(45%) drop-shadow(2px 4px 6px black);
 }
 
 #inputdiv {

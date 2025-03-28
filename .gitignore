@@ -26,4 +26,5 @@ yarn-error.log*
 
 # Misc
 .DS_Store
+.node_modules/
 *.log

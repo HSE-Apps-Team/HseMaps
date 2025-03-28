@@ -1,7 +1,7 @@
 // src/pages/Navigation.js
 import React, { useEffect, useRef } from 'react';
 import { EventHandlingModule } from '../modules/EventHandlingModule';
-import { UtilityModule } from '../modules/UtilityModule';
+import { NavigationController } from '../modules/NavigationController';
 
 export const Navigation = () => {
     const scrollRef = useRef(null);
@@ -11,12 +11,15 @@ export const Navigation = () => {
         const handleScroll = () => {
             if (progbarRef.current && scrollRef.current) {
                 progbarRef.current.value = scrollRef.current.scrollTop;
-                UtilityModule.updateAgent();
+                NavigationController.updateAgentPosition();
             }
         };
 
         const handleInput = () => {
-            UtilityModule.updateAgent();
+            if (scrollRef.current && progbarRef.current) {
+                scrollRef.current.scrollTop = progbarRef.current.value;
+                NavigationController.updateAgentPosition();
+            }
         };
 
         const scrollElement = scrollRef.current;

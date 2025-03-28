@@ -1,7 +1,8 @@
 /**
  * @module DOMCache
  * @description React-optimized DOM element caching with ref management
- */
+
+*/
 
 import { useRef, useEffect } from 'react';
 
