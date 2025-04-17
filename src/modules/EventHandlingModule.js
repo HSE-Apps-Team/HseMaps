@@ -80,8 +80,7 @@ export const EventHandlingModule = {
             [firstFloor, secondFloor] = ['comb', 'main'];
         }
         
-        await RenderingModule.generateMask(segments[0], firstFloorImage, firstFloor);
-        await RenderingModule.generateMask(segments[1], secondFloorImage, secondFloor);
+
         
         // Initialize path for navigation
         NavigationController.initializePath(path);
