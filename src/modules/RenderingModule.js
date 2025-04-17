@@ -114,6 +114,7 @@ export const RenderingModule = {
 
         try {
             const masks = StateManager.get('maskedImages');
+            console.log(path);
             if (!masks) {
                 console.warn('No mask images available');
                 return null;

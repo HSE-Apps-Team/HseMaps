@@ -30,6 +30,9 @@ export const Config = {
         FLOOR_CHANGE: 76,
         STAIR_DISTANCE: 10000
     },
+    STAIRWELLS: [
+        99,79,106,100,97,77,78,104,105
+    ],
     /** @namespace DEFAULTS - Default system values */
     DEFAULTS: { MARGIN: 300 },
     /** @namespace LOG - Authentication and logging configuration */
