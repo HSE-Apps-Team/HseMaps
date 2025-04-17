@@ -7,6 +7,7 @@ import { Config } from '../config/config.js';
 import { SVGCreator } from './SVGCreator.js';
 import { StateManager } from './StateManager.js';
 import { UtilityModule } from './UtilityModule.js';
+import mainFloorImage from '../elements/mainfloorcrunched.png';
 
 export const RenderingModule = {
     /**
@@ -30,72 +31,6 @@ export const RenderingModule = {
     },
 
     /**
-     * @function generateMask
-     * @async
-     * @param {string} points - SVG points string for masking
-     * @param {string} source - Image source URL
-     * @param {string} floor - Floor identifier
-     * @returns {Promise<void>}
-     * @description Generates a masked image for floor transitions
-     */
-    async generateMask(points, source, floor) {
-        if (!points || !source || !floor) {
-            console.warn('Missing parameters for mask generation');
-            return;
-        }
-        
-        const masks = StateManager.get('maskedImages') || {};
-        if (masks[floor]) return;
-
-        try {
-            const response = await fetch(source, { cache: 'force-cache' });
-            const blob = await response.blob();
-            const bitmap = await createImageBitmap(blob, {
-                premultiplyAlpha: 'premultiply',
-                colorSpaceConversion: 'default'
-            });
-            
-            const canvas = new OffscreenCanvas(2048, 1308);
-            const ctx = canvas.getContext('2d', {
-                alpha: true,
-                willReadFrequently: false,
-                desynchronized: true,
-                antialias: false
-            });
-            
-            ctx.imageSmoothingEnabled = false;
-            ctx.drawImage(bitmap, 0, 0);
-            
-            ctx.globalCompositeOperation = 'destination-in';
-            ctx.fillStyle = 'white';
-            ctx.fillRect(0, 0, 2048, 1308);
-            
-            const coords = points.split(' ').map(p => p.split(',').map(Number));
-            ctx.beginPath();
-            ctx.strokeStyle = 'black';
-            ctx.lineWidth = 50;
-            ctx.lineCap = 'round';
-            ctx.lineJoin = 'round';
-            coords.forEach(([x, y], i) => {
-                i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
-            });
-            ctx.stroke();
-            
-            const resultBlob = await canvas.convertToBlob({
-                type: 'image/webp',
-                quality: 0.7
-            });
-            
-            masks[floor] = URL.createObjectURL(resultBlob);
-            StateManager.set('maskedImages', masks);
-            bitmap.close();
-        } catch (error) {
-            console.error('Mask generation failed:', error);
-            throw error;
-        }
-    },
-
-    /**
      * @function selectPath
      * @async
      * @param {number[]} path - Array of vertex indices
@@ -113,17 +48,12 @@ export const RenderingModule = {
         }
 
         try {
-            const masks = StateManager.get('maskedImages');
-            console.log(path);
-            if (!masks) {
-                console.warn('No mask images available');
-                return null;
-            }
+   
 
             const floor = path[0] > Config.THRESHOLD.FLOOR_CHANGE ? 'comb' : 'main';
             
             const image = document.querySelector(Config.SVG.SELECTORS.IMAGE);
-            image.href.baseVal = masks[floor];
+            image.href.baseVal = mainFloorImage;
 
             const points = path.map(p => `${vertices[p].x},${vertices[p].y}`).join(' ');
             const line = this.createLine(points, graph);
