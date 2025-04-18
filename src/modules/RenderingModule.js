@@ -8,6 +8,7 @@ import { SVGCreator } from './SVGCreator.js';
 import { StateManager } from './StateManager.js';
 import { NavigationController } from './NavigationController.js';
 import mainFloorImage from '../elements/mainfloorcrunched.png';
+import secondFloorImage from '../elements/combscaled.png';
 
 export const RenderingModule = {
     /**
@@ -46,14 +47,20 @@ export const RenderingModule = {
             console.warn('Invalid path or vertices data');
             return null;
         }
-
+        let floor = path[0] > Config.THRESHOLD.FLOOR_CHANGE ? 'comb' : 'main';
+        let img = '';
+        if(floor === 'comb') {
+            img = secondFloorImage;
+        } else{ 
+            img = mainFloorImage;
+        }
         try {
    
 
-            const floor = path[0] > Config.THRESHOLD.FLOOR_CHANGE ? 'comb' : 'main';
             
             const image = document.querySelector(Config.SVG.SELECTORS.IMAGE);
-            image.href.baseVal = mainFloorImage;
+            image.href.baseVal = img;
+            
 
             const points = path.map(p => `${vertices[p].x},${vertices[p].y}`).join(' ');
             const line = this.createLine(points, graph);
