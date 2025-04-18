@@ -30,7 +30,30 @@ export const RenderingModule = {
         graph.insertAdjacentElement("beforeend", path);
         return path;
     },
-
+    getFloor(path, vertices) {
+        if (!path?.length || !vertices) {
+            console.warn('Invalid path or vertices data');
+            return null;
+        }
+        let floor = path[0] > Config.THRESHOLD.FLOOR_CHANGE ? 'comb' : 'main';
+        let level = undefined;
+        if(floor === 'comb') {
+            level = 'Second';
+        } else if (floor === 'main') { 
+            level = 'First';
+        };
+        return level;
+    },
+    getIMG(level) {
+        if (level === 'Second') {
+            return secondFloorImage;
+        } else if (level === 'First') {
+            return mainFloorImage;
+        } else {
+            console.warn('Invalid level for image retrieval');
+            return null;
+        }
+    },
     /**
      * @function selectPath
      * @async
@@ -47,20 +70,13 @@ export const RenderingModule = {
             console.warn('Invalid path or vertices data');
             return null;
         }
-        let floor = path[0] > Config.THRESHOLD.FLOOR_CHANGE ? 'comb' : 'main';
-        let img = '';
-        if(floor === 'comb') {
-            img = secondFloorImage;
-        } else{ 
-            img = mainFloorImage;
-        }
         try {
    
 
             
             const image = document.querySelector(Config.SVG.SELECTORS.IMAGE);
-            image.href.baseVal = img;
-            
+            image.href.baseVal = this.getIMG(this.getFloor(path, vertices));
+            document.getElementById("overlappingText").innerText = this.getFloor(path, vertices) + ' Floor';
 
             const points = path.map(p => `${vertices[p].x},${vertices[p].y}`).join(' ');
             const line = this.createLine(points, graph);
@@ -109,6 +125,7 @@ export const RenderingModule = {
             console.warn('Missing elements for focus');
             return;
         }
+        margin = 500
         const map = svg.viewBox.baseVal;
         const focus = element.getBBox();
         map.x = focus.x - margin / 2;

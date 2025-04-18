@@ -90,6 +90,22 @@ export const Navigation = () => {
                         </g>
                     </g>
                 </svg>
+                <div 
+                    id="overlappingText"
+                    style={{
+                      position: 'absolute',
+                      top: '35%',
+                      left: '50%',
+                      transform: 'translate(-50%, -50%)',
+                      color: 'white',
+                      fontSize: '24px',
+                      fontWeight: 'bold',
+                      textShadow: '2px 2px 4px rgba(0, 0, 0, 0.7)',
+                      pointerEvents: 'none' // Ensures the text doesn't block interactions with the SVG
+                    }}
+                    >
+                      
+                </div>
             </div>
 
             <div id="progbarcontainer">
