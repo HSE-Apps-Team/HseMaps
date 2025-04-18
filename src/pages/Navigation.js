@@ -111,7 +111,7 @@ export const Navigation = () => {
                 </select>
                 
                 <div style={{ margin: '10px 0', fontWeight: 'bold' }}>
-                    <span id="nextDestination"></span>
+                    <span id="nextDestination"> No classes Selected</span>
                 </div>
                 
                 <button onClick={EventHandlingModule.navigateSchedule}>Route From Schedule</button>
