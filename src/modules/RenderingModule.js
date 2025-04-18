@@ -6,7 +6,7 @@
 import { Config } from '../config/config.js';
 import { SVGCreator } from './SVGCreator.js';
 import { StateManager } from './StateManager.js';
-import { UtilityModule } from './UtilityModule.js';
+import { NavigationController } from './NavigationController.js';
 import mainFloorImage from '../elements/mainfloorcrunched.png';
 
 export const RenderingModule = {
@@ -81,7 +81,7 @@ export const RenderingModule = {
 
 
 
-            UtilityModule.updateAgent();
+            NavigationController.updateAgentPosition();
             return line;
         } catch (error) {
             console.error('Path selection failed:', error);

@@ -12,6 +12,10 @@ export const Settings = () => {
     localStorage.setItem('theme', newTheme);
   };
 
+  const handleCheckChange = (event) => {
+    localStorage.useRotate = document.getElementById("rotate-toggle").checked;
+  };
+
   useEffect(() => {
     const savedTheme = localStorage.getItem('theme') || 'light';
     setTheme(savedTheme);
@@ -51,6 +55,14 @@ export const Settings = () => {
               </optgroup>
             </select>
           </div>
+          <div className="setting-item">
+            <label htmlFor="rotate-toggle">Enable Rotation:</label>
+            <input
+              type="checkbox"
+              id="rotate-toggle"
+              onChange={handleCheckChange}
+            />
+            </div>
         </div>
       </Paper>
     </Container>

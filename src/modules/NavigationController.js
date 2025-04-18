@@ -12,6 +12,7 @@ import { DataModule } from './DataModule.js';
 import { ResourceManager } from './ResourceManager.js';
 
 export const NavigationController = {
+
     /**
      * Updates the agent position based on current scroll/slider position
      * @param {number} [margin=Config.DEFAULTS.MARGIN] - Margin for focusing
@@ -78,8 +79,13 @@ export const NavigationController = {
         agent.cx.baseVal.value = point.x;
         agent.cy.baseVal.value = point.y;
         const orientation = 270 - (Math.atan2(dy, dx) * 180 / Math.PI);
+        let rotate = 'transform: rotate(90deg)';
+        if(localStorage.useRotate == 'true' || StateManager.flagRotate == false) {
+            rotate = `transform: rotate(${orientation}deg)`;
+            StateManager.flagRotate = true;
+        } 
         RenderingModule.focus(agent, margin);
-        svg.setAttribute("style", `transform-origin: ${point.x}px ${point.y}px; transform: rotate(${orientation}deg)`);
+        svg.setAttribute("style", `transform-origin: ${point.x}px ${point.y}px; ` + rotate);
     },
     
     /**

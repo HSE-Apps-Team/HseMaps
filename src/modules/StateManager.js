@@ -38,7 +38,8 @@ const state = {
     path: [],
     distanceDomain: [],
     currentPathSegment: null,
-    maskedImages: null
+    maskedImages: null,
+    flagRotate: false
 };
 
 // Legacy StateManager API
