@@ -83,7 +83,9 @@ export const NavigationController = {
         if(localStorage.useRotate == 'true' || StateManager.flagRotate == false) {
             rotate = `transform: rotate(${orientation}deg)`;
             StateManager.flagRotate = true;
-        } 
+        } else {
+            
+        }
         RenderingModule.focus(agent, margin);
         svg.setAttribute("style", `transform-origin: ${point.x}px ${point.y}px; ` + rotate);
     },
