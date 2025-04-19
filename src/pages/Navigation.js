@@ -2,6 +2,7 @@
 import React, { useEffect, useRef } from 'react';
 import { EventHandlingModule } from '../modules/EventHandlingModule';
 import { NavigationController } from '../modules/NavigationController';
+import { useMediaQuery } from "@mui/material";
 
 export const Navigation = () => {
     const scrollRef = useRef(null);
@@ -39,6 +40,22 @@ export const Navigation = () => {
                 progbarElement.removeEventListener('input', handleInput);
             }
         };
+    }, []);
+
+    // Handle mobile-specific logic for overlapping text
+    useEffect(() => {
+        const isMobile = window.matchMedia("(max-width: 768px)").matches;
+        const overlappingText = document.getElementById("overlappingText");
+
+        if (overlappingText) {
+            if (isMobile) {
+                overlappingText.style.top = "50%";
+            } else {
+                overlappingText.style.top = "35%";
+            }
+        }
+
+        console.log("SVG loaded successfully");
     }, []);
 
     return (
@@ -103,8 +120,8 @@ export const Navigation = () => {
                       textShadow: '2px 2px 4px rgba(0, 0, 0, 0.7)',
                       pointerEvents: 'none' // Ensures the text doesn't block interactions with the SVG
                     }}
-                    >
-                      
+                >
+                    
                 </div>
             </div>
 

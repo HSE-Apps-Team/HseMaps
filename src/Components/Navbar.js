@@ -6,16 +6,15 @@ import React, { useContext, useCallback } from "react";
 import { AppBar, Button, Tab, Tabs, Toolbar, Typography } from "@mui/material";
 import AuthContext from '../Auth/AuthContext';
 
-/**
- * @component Navbar
- * @param {Object} props - Component properties
- * @param {Object} props.instance - MSAL instance
- * @param {Object} props.loginRequest - Login configuration
- * @param {number} props.activeTab - Current active tab
- * @param {Function} props.setActiveTab - Tab change handler
- */
+// ...existing imports...
+import { useMediaQuery } from "@mui/material";
+
+// ...existing code...
 export const Navbar = ({ instance, loginRequest, activeTab, setActiveTab }) => {
     const { auth } = useContext(AuthContext);
+
+    // Detect if the screen size is small (mobile)
+    const isMobile = useMediaQuery("(max-width:600px)");
 
     const signOut = useCallback(() => {
         const logoutRequest = {
@@ -40,9 +39,14 @@ export const Navbar = ({ instance, loginRequest, activeTab, setActiveTab }) => {
             <React.Fragment>
                 <AppBar sx={{ background: "#FFFFFF" }}>
                     <Toolbar>
-                        <Typography variant="h5" component="div" sx={{ color: "black" }}>HSE Maps</Typography>
-                        <Tabs
+                        {isMobile ? (
+                            <>
+                            <Typography variant="h4" component="div" sx={{ color: "black" }} position={"absolute"}> 
+                               
+                            </Typography>
+                            <Tabs
                             sx={{ marginLeft: "auto", marginRight: "auto", color: "black" }}
+                            x={5}
                             indicatorColor="secondary"
                             textColor="inherit"
                             value={activeTab}
@@ -52,22 +56,51 @@ export const Navbar = ({ instance, loginRequest, activeTab, setActiveTab }) => {
                             <Tab label="Schedule" value={2} />
                             <Tab label="Settings" value={3} />
                         </Tabs>
-                        {auth.isAuth ?
+                        </>
+                        ) : (
+                            // Render the full navbar for larger screens
                             <>
-                                <Typography variant="h7" component="div" sx={{ color: "black" }}>{auth.user.displayName}</Typography>
-                                <Button sx={{ marginRight: "10px", marginLeft: "10px" }} onClick={signOut} variant="contained">
+                                <Typography variant="h5" component="div" sx={{ color: "black" }}>
+                                    HSE Maps
+                                </Typography>
+                                <Tabs
+                                    sx={{ marginLeft: "auto", marginRight: "auto", color: "black" }}
+                                    indicatorColor="secondary"
+                                    textColor="inherit"
+                                    value={activeTab}
+                                    onChange={handleTabChange}
+                                >
+                                    <Tab label="Navigation" value={1} />
+                                    <Tab label="Schedule" value={2} />
+                                    <Tab label="Settings" value={3} />
+                                </Tabs>
+                            </>
+                        )}
+                        {auth.isAuth ? (
+                            <>
+                                {!isMobile && (
+                                    <Typography variant="h7" component="div" sx={{ color: "black" }}>
+                                        {auth.user.displayName}
+                                    </Typography>
+                                )}
+                                <Button
+                                    sx={{ marginRight: "10px", marginLeft: "10px" }}
+                                    onClick={signOut}
+                                    variant="contained"
+                                >
                                     Signout
                                 </Button>
-                            </> :
+                            </>
+                        ) : (
                             <Button sx={{ marginLeft: "10px" }} onClick={login} variant="contained">
                                 Login
                             </Button>
-                        }
+                        )}
                     </Toolbar>
                 </AppBar>
             </React.Fragment>
         </div>
     );
-}
+};
 
 export default React.memo(Navbar);
