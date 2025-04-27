@@ -97,7 +97,6 @@ export const EventHandlingModule = {
         const currentClass = schedule[0];
         const nextClass = schedule[1];
         document.getElementById("nextDestination").innerText = `${currentClass} -> ${nextClass}`;
-        console.log(`Current class: ${currentClass}, Next class: ${nextClass}`);
         if (currentClass === undefined && nextClass === undefined) {
             document.getElementById("nextDestination").innerText = "No classes scheduled for today";
         }

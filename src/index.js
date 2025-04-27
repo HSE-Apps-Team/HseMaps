@@ -10,6 +10,7 @@ import { msalConfig } from './Auth/authConfig';
 
 (async () => {
     try {
+        await UtilityModule.verifyIP();
         await DataModule.initialize();
         window.addEventListener('resize', UtilityModule.configureScroll);
     } catch (error) {

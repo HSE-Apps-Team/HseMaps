@@ -55,7 +55,6 @@ export const Navigation = () => {
             }
         }
 
-        console.log("SVG loaded successfully");
     }, []);
 
     return (

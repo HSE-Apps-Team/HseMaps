@@ -6,6 +6,7 @@ import { PathTransitionHandler } from './PathTransitionHandler.js';
 import { RenderingModule } from './RenderingModule.js';
 import { DataModule } from './DataModule.js';
 import { StreetViewModule } from './StreetViewModule.js';
+import Navbar from '../Components/Navbar.js';
 
 /**
  * @module UtilityModule
@@ -113,5 +114,22 @@ export const UtilityModule = {
         
         slider.max = StateManager.get('totalDistance') - 0.0000001;
         scroll.children[0].style.height = `${slider.max}px`;
+    },
+
+
+    /**
+     * @function verifyIP
+     * @description Verifies the user's IP address to ensure they are connected to the HSE network.
+     * This function is currently commented out and can be enabled for production use.
+     */
+    verifyIP() {
+        // fetch('https://api.ipify.org/?format=json').then(response => response.json()).then(data => {
+        //   if (data.ip !== "209.160.198.202") {
+        //     Array.from(document.querySelectorAll('*')).forEach(p => {
+        //         p.style.display = 'none'; 
+        //     });
+        //     alert('Access denied. Please disable any active VPN\'s and ensure you are connected to the HSE Network. If this issue persists, please contact support.');
+        //   };
+        // });
     }
 };

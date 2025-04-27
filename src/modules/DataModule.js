@@ -24,7 +24,7 @@ export const DataModule = (function() {
      * @throws {Error} If initialization fails
      */
     async function initialize() {
-        const [distMatrix, nextMatrix, rawRooms, verts, imgs] = await Promise.all([
+        const [distMatrix, nextMatrix, rawRooms, verts, imgs, ip] = await Promise.all([
             require('../elements/DistanceMatrix.json'),
             require('../elements/PrecomputedPaths.json'),
             require('../elements/SLAVEWORK.json'),
