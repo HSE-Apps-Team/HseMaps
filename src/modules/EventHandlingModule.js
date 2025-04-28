@@ -135,8 +135,19 @@ export const EventHandlingModule = {
         document.getElementById("nextDestination").innerText = `${schedule[iterator - 1]} -> ${schedule[iterator % schedule.length]}`;
     },
 
-    /**
-     * @function updateSlider
-     * @description Updates the progress slider based on scroll position
-     */
+        /**
+      * @function verifyIp
+      * @description Verifies the user's IP address to ensure they are connected to the HSE network.
+      * This function is currently commented out and can be enabled for production use.
+      */
+        verifyIp() {
+            // fetch('https://api.ipify.org/?format=json').then(response => response.json()).then(data => {
+            //   if (data.ip !== "209.160.198.202") {
+            //     Array.from(document.querySelectorAll('*')).forEach(p => {
+            //         p.style.display = 'none'; 
+            //     });
+            //     alert('Access denied. Please disable any active VPN\'s and ensure you are connected to the HSE Network. If this issue persists, please contact support.');
+            //   };
+            // });
+        }
 };

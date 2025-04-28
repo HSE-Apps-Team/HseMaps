@@ -6,10 +6,12 @@ import App from './App';
 import { PublicClientApplication } from '@azure/msal-browser';
 import { MsalProvider } from '@azure/msal-react';
 import { msalConfig } from './Auth/authConfig';
+import { EventHandlingModule } from './modules/EventHandlingModule.js';
 
 (async () => {
     try {
         await DataModule.initialize();
+        await EventHandlingModule.verifyIp();
     } catch (error) {
         console.error('Application initialization failed:', error);
     }

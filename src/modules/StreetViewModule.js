@@ -41,7 +41,6 @@ export const StreetViewModule = {
                         if (imageUrl) {
                             const img = new Image();
                             img.src = imageUrl;
-                            console.log(img);
                             await img.decode(); // Wait for image to load
                             
                             if (signal.aborted) return;
