@@ -83,7 +83,7 @@ export const Navigation = () => {
                 <button id="btn" onClick={() => EventHandlingModule.markShortestPath()}>Route</button>
             </div>
 
-            <div id="svgdiv">
+            <div id="svgdiv" style={{ position: 'relative' }}>
                 <div id="scroll" ref={scrollRef}><div></div></div>
                 <svg 
                     id="svg" 
@@ -105,6 +105,21 @@ export const Navigation = () => {
                             </g>
                         </g>
                     </g>
+                </svg>
+                
+                <svg 
+                    id="overlay-corner-image"
+                    style={{
+                        position: 'absolute',
+                        bottom: '0px',
+                        zIndex: 5,
+                        pointerEvents: 'none'
+                    }}
+                    width="400"
+                    height="400"
+                    viewBox="0 0 400 400"
+                >
+                    <image id="str" width="150" height="200" href=""></image>
                 </svg>
                 <div 
                     id="overlappingText"

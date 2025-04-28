@@ -39,7 +39,8 @@ const state = {
     distanceDomain: [],
     currentPathSegment: null,
     maskedImages: null,
-    flagRotate: false
+    flagRotate: false,
+    rotation: "90"
 };
 
 // Legacy StateManager API
