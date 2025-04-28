@@ -62,6 +62,7 @@ export const Settings = () => {
               id="rotate-toggle"
               defaultChecked={JSON.parse(localStorage.useRotate)}
               onChange={handleCheckChange}
+              defaultChecked={localStorage.useRotate === 'true'}
             />
             </div>
         </div>

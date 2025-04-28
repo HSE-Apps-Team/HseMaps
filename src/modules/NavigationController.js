@@ -83,7 +83,9 @@ export const NavigationController = {
             rotate = `transform: rotate(${orientation}deg)`;
             StateManager.rotation = orientation;
             StateManager.flagRotate = true;
-        } 
+        } else {
+            
+        }
         RenderingModule.focus(agent, margin);
         svg.setAttribute("style", `transform-origin: ${point.x}px ${point.y}px; ` + rotate);
     },
