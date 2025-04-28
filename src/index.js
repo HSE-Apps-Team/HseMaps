@@ -9,7 +9,6 @@ import { msalConfig } from './Auth/authConfig';
 
 (async () => {
     try {
-        await UtilityModule.verifyIP();
         await DataModule.initialize();
     } catch (error) {
         console.error('Application initialization failed:', error);
