@@ -10,7 +10,7 @@ export const StreetViewModule = {
     /** @constant {string} DEFAULT_IMAGE - Path to the default fallback image */
     DEFAULT_IMAGE: '/assets/no-streetview.jpg',
     imageCache: new Map(),
-    MAX_CACHE_SIZE: 50, // Maximum number of images to keep in cache
+    MAX_CACHE_SIZE: 150, // Maximum number of images to keep in cache
     preloadAbortController: null, // For cancelling previous preloads
 
     /**
@@ -41,6 +41,7 @@ export const StreetViewModule = {
                         if (imageUrl) {
                             const img = new Image();
                             img.src = imageUrl;
+                            console.log(img);
                             await img.decode(); // Wait for image to load
                             
                             if (signal.aborted) return;
@@ -55,6 +56,7 @@ export const StreetViewModule = {
                             this.imageCache.set(imageKey, imageUrl);
                         }
                     } catch (error) {
+                        console.error(error);
                         if (!signal.aborted) {
                             console.warn(`Failed to preload image: ${imageKey}`);
                         }
