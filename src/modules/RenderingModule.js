@@ -47,7 +47,13 @@ export const RenderingModule = {
             console.warn('Invalid path or vertices data');
             return null;
         }
-        let floor = path[0] > Config.THRESHOLD.FLOOR_CHANGE ? 'comb' : 'main';
+        let bool = StateManager.get("path")[0] > Config.THRESHOLD.FLOOR_CHANGE;
+        if(StateManager.get("secondPathRendered")){
+            bool = !bool;
+        }
+
+        let floor = bool ? 'comb' : 'main';
+
         let img = '';
         if(floor === 'comb') {
             img = secondFloorImage;
@@ -125,8 +131,7 @@ export const RenderingModule = {
         try {
             const selected = document.getElementsByClassName("gen");
             Array.from(selected).forEach(el => el.remove());
-            StateManager.set('skipStart', () => true);
-            StateManager.set('skipEnd', () => false);
+            StateManager.flagRotate=false;
         } catch (error) {
             console.error('Refresh failed:', error);
         }

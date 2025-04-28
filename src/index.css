@@ -225,7 +225,6 @@ svg {
   border-radius: 1em;
 }
 #svgraph{
-  filter: opacity(45%) drop-shadow(2px 4px 6px black);
 }
 
 #inputdiv {

@@ -10,43 +10,101 @@ import { DataModule } from './DataModule.js';
 export const PathTransitionHandler = {
     /**
      * @type {boolean}
-     * @description Flag indicating if a floor transition is in progress
+     * @description Flag indicating if a transition has occurred at current position
      */
-    isTransitioning: false,
-
+    transitionPerformed: false,
+    
     /**
      * @function handleTransition
      * @returns {boolean} True if transition occurred, false otherwise
-     * @description Handles floor transitions based on current path segment
+     * @description Handles floor transitions based on agent proximity to stairwell
      */
     handleTransition() {
-        if (this.isTransitioning) return false;
-        
-        this.isTransitioning = true;
-        const currentSegment = StateManager.get('currentPathSegment');
-        const fullPath = StateManager.get('path');
-        let isSecondFloor = fullPath[currentSegment] > Config.THRESHOLD.FLOOR_CHANGE;
-        
-        if (fullPath[0] > Config.THRESHOLD.FLOOR_CHANGE) {
-            isSecondFloor = !isSecondFloor;
+        // Check if agent is near stairwell
+        if (!this.isNearStairwell()) {
+            // Reset transition state when away from stairwell
+            this.transitionPerformed = false;
+            return false;
         }
-
-        const needsTransition = isSecondFloor ? 
-            StateManager.get('firstPathRendered') : 
-            StateManager.get('secondPathRendered');
-
-        if (needsTransition) {
-            StateManager.set('firstPathRendered', !isSecondFloor);
-            StateManager.set('secondPathRendered', isSecondFloor);
-            const callback = isSecondFloor ? 
-                StateManager.get('onPathEnd') : 
-                StateManager.get('onPathStart');
+        
+        // Only perform transition once per stairwell visit
+        if (this.transitionPerformed) {
+            return false;
+        }
+        
+        // Perform the transition
+        const transitionOccurred = this.onStair();
+        return transitionOccurred;
+    },
+    
+    /**
+     * @function isNearStairwell
+     * @returns {boolean} True if agent is near a stairwell, false otherwise
+     * @description Checks if agent element is near the stairwell element
+     */
+    isNearStairwell() {
+        const agentElement = document.getElementById('agent');
+        const stairwellElement = document.getElementById('stairwell');
+        
+        if (!agentElement || !stairwellElement) return false;
+        
+        const agentRect = agentElement.getBoundingClientRect();
+        const stairwellRect = stairwellElement.getBoundingClientRect();
+        
+        // Calculate centers
+        const agentCenterX = agentRect.left + agentRect.width / 2;
+        const agentCenterY = agentRect.top + agentRect.height / 2;
+        const stairwellCenterX = stairwellRect.left + stairwellRect.width / 2;
+        const stairwellCenterY = stairwellRect.top + stairwellRect.height / 2;
+        
+        // Calculate distance between centers
+        const distance = Math.sqrt(
+            Math.pow(agentCenterX - stairwellCenterX, 2) + 
+            Math.pow(agentCenterY - stairwellCenterY, 2)
+        );
+        
+        // Check if distance is less than the threshold
+        const proximityThreshold = Config.THRESHOLD.STAIR_PROXIMITY;
+        return distance <= proximityThreshold;
+    },
+    
+    /**
+     * @function onStair
+     * @returns {boolean} True if transition occurred, false otherwise
+     * @description Handles the floor transition when agent is on a stair
+     */
+    onStair() {
+        this.transitionPerformed = true;
+        // Instead of checking which floor we're on based on node IDs,
+        // simply check which floor is currently rendered
+        const firstFloorRendered = StateManager.get('firstPathRendered');
+        const secondFloorRendered = StateManager.get('secondPathRendered');
+        
+        // Need both the current floor state and a valid path
+        if (StateManager.get('path') === undefined) return false;
+        
+        // If first floor is showing, transition to second floor
+        if (firstFloorRendered) {
+            StateManager.set('firstPathRendered', false);
+            StateManager.set('secondPathRendered', true);
+            
+            // Call the path end callback (going upstairs)
+            const callback = StateManager.get('onPathEnd');
             if (callback) callback();
-            this.isTransitioning = false;
             return true;
         }
-
-        this.isTransitioning = false;
+        
+        // If second floor is showing, transition to first floor
+        if (secondFloorRendered) {
+            StateManager.set('firstPathRendered', true);
+            StateManager.set('secondPathRendered', false);
+            
+            // Call the path start callback (going downstairs)
+            const callback = StateManager.get('onPathStart');
+            if (callback) callback();
+            return true;
+        }
+        
         return false;
     },
     
@@ -60,7 +118,7 @@ export const PathTransitionHandler = {
         const { distMatrix } = DataModule.get();
         for (let i = 0; i < path.length-1; i++) {
             if (distMatrix[path[i]][path[i + 1]] === Config.THRESHOLD.STAIR_DISTANCE) {
-                return i+1;
+                return i;
             }
         }
         return -1;

@@ -28,7 +28,8 @@ export const Config = {
     /** @namespace THRESHOLD - System thresholds and limits */
     THRESHOLD: {
         FLOOR_CHANGE: 76,
-        STAIR_DISTANCE: 10000
+        STAIR_DISTANCE: 10000,
+        STAIR_PROXIMITY: 0.01
     },
     STAIRWELLS: [
         99,79,106,100,97,77,78,104,105

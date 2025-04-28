@@ -9,7 +9,7 @@ import { ColorModule } from './ColorModule.js';
 import { PathTransitionHandler } from './PathTransitionHandler.js';
 import { RenderingModule } from './RenderingModule.js';
 import { DataModule } from './DataModule.js';
-import { ResourceManager } from './ResourceManager.js';
+import { StreetViewModule } from './StreetViewModule.js';
 
 export const NavigationController = {
 
@@ -37,19 +37,18 @@ export const NavigationController = {
             const { agent, path, progbar, svg, svgdiv } = elements;
             const sliderValue = progbar.value;
             const distanceDomain = StateManager.get('distanceDomain');
-            
             // Calculate current path segment
             const currentPathSegment = distanceDomain.findIndex((e, i) => 
                 sliderValue >= distanceDomain[i] && sliderValue < (distanceDomain[i + 1] || Infinity)
             );
-            
             // Update state and background image
             const prevSegment = StateManager.get('currentPathSegment');
             StateManager.set('currentPathSegment', currentPathSegment);
             
-            if (prevSegment !== currentPathSegment) {
-                svgdiv.style.backgroundImage = `url(${ResourceManager.getPathSegmentImage()})`;
+            if (prevSegment !== currentPathSegment || !document.getElementById("str").href.baseVal) {
+                document.getElementById("str").href.baseVal = StreetViewModule.getImage();
             }
+            
             
             // Position the agent
             const sliderCompletion = sliderValue / progbar.max;
@@ -79,9 +78,10 @@ export const NavigationController = {
         agent.cx.baseVal.value = point.x;
         agent.cy.baseVal.value = point.y;
         const orientation = 270 - (Math.atan2(dy, dx) * 180 / Math.PI);
-        let rotate = 'transform: rotate(90deg)';
-        if(localStorage.useRotate == 'true' || StateManager.flagRotate == false) {
+        let rotate = 'transform: rotate('+StateManager.rotation+'deg)';
+        if(JSON.parse(localStorage.useRotate) || !StateManager.flagRotate) {
             rotate = `transform: rotate(${orientation}deg)`;
+            StateManager.rotation = orientation;
             StateManager.flagRotate = true;
         } 
         RenderingModule.focus(agent, margin);
@@ -96,6 +96,7 @@ export const NavigationController = {
             console.warn('No path to render');
             return;
         }
+        StreetViewModule.preloadImagesForPath(path);
 
         // Reset the rendering state
         RenderingModule.refresh();
@@ -109,7 +110,6 @@ export const NavigationController = {
         StateManager.set('path', path);
         
         // Preload images for smoother navigation
-        ResourceManager.preloadImagesForPath(path);
 
         // Create distance domain for path navigation
         const distanceDomain = [];
@@ -117,8 +117,11 @@ export const NavigationController = {
         
         for (let i = 0; i < path.length; i++) {
             distanceDomain[i] = accumulatedDist;
-            if (i < path.length - 1 && distMatrix[path[i]][path[i + 1]] < Config.THRESHOLD.STAIR_DISTANCE) {
-                accumulatedDist += distMatrix[path[i]][path[i + 1]];
+            if (i < path.length - 1) {
+                accumulatedDist += Math.sqrt(
+                    Math.pow(verts[path[i]].x - verts[path[i + 1]].x, 2) +
+                    Math.pow(verts[path[i]].y - verts[path[i + 1]].y, 2)
+                );
             }
         }
         
@@ -127,51 +130,51 @@ export const NavigationController = {
         // Handle stair transitions if present
         for (let i = 0; i < path.length - 1; i++) {
             if (distMatrix[path[i]][path[i + 1]] === Config.THRESHOLD.STAIR_DISTANCE) {
-                this.configureStairTransition(path, i + 1, distMatrix, verts);
-                return RenderingModule.selectPath(path.slice(0, i + 1), verts, undefined, "stairwell");
+                let index = Config.STAIRWELLS.includes(path[i]) ? i : i + 1;
+                this.swapTransitionWeights(path, distMatrix, i, verts);
+                this.configureStairTransition(path, index, distMatrix, verts);
+                return RenderingModule.selectPath(path.slice(0, index+1), verts, undefined, "stairwell");
             }
         }
         
         return RenderingModule.selectPath(path, verts);
     },
     
+
+    swapTransitionWeights(path, distMatrix, index, verts) {
+        StateManager.set('totalDistance', 
+            StateManager.get('totalDistance') + Math.sqrt(
+                Math.pow(verts[path[index]].x - verts[path[index + 1]].x, 2) +
+                Math.pow(verts[path[index]].y - verts[path[index + 1]].y, 2)
+            )-distMatrix[path[index]][path[index + 1]]
+        );
+    },
     /**
      * Configures stair transitions between floors
      */
     configureStairTransition(path, index, distMatrix, verts) {
-        StateManager.set('totalDistance', 
-            StateManager.get('totalDistance') - distMatrix[path[index - 1]][path[index]]
-        );
         
         StateManager.set('onPathStart', () => {
-            if (!StateManager.get('skipStart')()) {
                 RenderingModule.refresh();
-                StateManager.set('skipEnd', () => false);
-                StateManager.set('skipStart', () => true);
-                
                 RenderingModule.selectPath(
-                    path.slice(0, index),
+                    path.slice(0, index+1),
                     verts, 
                     undefined, 
                     "stairwell"
                 );
                 this.configureScroll();
-            }
         });
 
         StateManager.set('onPathEnd', () => {
-            if (!StateManager.get('skipEnd')()) {
+
                 RenderingModule.refresh();
-                StateManager.set('skipStart', () => false);
-                StateManager.set('skipEnd', () => true);
-            
                 RenderingModule.selectPath(
                     path.slice(index),
                     verts,
                     "stairwell"
                 );
                 this.configureScroll();
-            }
+
         });
     },
     
@@ -186,7 +189,7 @@ export const NavigationController = {
         const scroll = DOMCache[Config.SVG.SELECTORS.SCROLL];
         const slider = DOMCache[Config.SVG.SELECTORS.PROGBAR];
         
-        slider.max = StateManager.get('totalDistance') - 0.0000001;
+        slider.max = Math.ceil(StateManager.get('totalDistance'));
         scroll.children[0].style.height = `${slider.max}px`;
     }
 };

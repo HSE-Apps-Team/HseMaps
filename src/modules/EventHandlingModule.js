@@ -1,6 +1,5 @@
 import { StateManager } from './StateManager.js';
 import { RenderingModule } from './RenderingModule.js';
-import { UtilityModule } from './UtilityModule.js';
 import { DOMCache } from './DOMCache.js';
 import { Config } from '../config/config.js';
 import { ScheduleManager } from './ScheduleManager.js';
@@ -140,12 +139,4 @@ export const EventHandlingModule = {
      * @function updateSlider
      * @description Updates the progress slider based on scroll position
      */
-    updateSlider() {
-        const slider = DOMCache[Config.SVG.SELECTORS.PROGBAR];
-        const scroll = DOMCache[Config.SVG.SELECTORS.SCROLL];
-        if (slider && scroll) {
-            slider.value = scroll.scrollTop;
-            UtilityModule.updateAgent();
-        }
-    }
 };
