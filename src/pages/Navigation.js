@@ -6,6 +6,10 @@ import { NavigationController } from '../modules/NavigationController';
 export const Navigation = () => {
     const scrollRef = useRef(null);
     const progbarRef = useRef(null);
+    if(!localStorage.getItem("useRotate")){
+        localStorage.setItem("useRotate", "true");
+
+    }
 
     useEffect(() => {
         const handleScroll = () => {

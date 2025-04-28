@@ -60,7 +60,7 @@ export const Settings = () => {
             <input
               type="checkbox"
               id="rotate-toggle"
-              defaultChecked={localStorage.getItem("useRotate") ? JSON.parse(localStorage.useRotate) : true}
+              defaultChecked={localStorage.getItem("useRotate")}
               onChange={handleCheckChange}
             />
             </div>
