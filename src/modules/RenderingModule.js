@@ -132,6 +132,7 @@ export const RenderingModule = {
             const selected = document.getElementsByClassName("gen");
             Array.from(selected).forEach(el => el.remove());
             StateManager.flagRotate=false;
+            document.getElementById("str").href.baseVal ="";
         } catch (error) {
             console.error('Refresh failed:', error);
         }
